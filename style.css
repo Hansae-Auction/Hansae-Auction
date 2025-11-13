@@ -1,0 +1,79 @@
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 16px;
+  line-height: 1.5;
+}
+
+header {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 12px;
+  margin-bottom: 24px;
+}
+
+nav a {
+  margin-right: 12px;
+  text-decoration: none;
+}
+
+.item {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 8px;
+}
+
+.bid-controls,
+.comment-form {
+  display: flex;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+input[type="number"],
+input[type="text"] {
+  flex: 1;
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+#comment-list {
+  border: 1px solid #eee;
+  border-radius: 4px;
+  padding: 8px;
+  min-height: 40px;
+  margin-bottom: 8px;
+}
+
+.comment {
+  border-bottom: 1px solid #f0f0f0;
+  padding: 4px 0;
+  font-size: 0.9rem;
+}
+
+.comment:last-child {
+  border-bottom: none;
+}
+
+.comment .nickname {
+  font-weight: bold;
+  margin-right: 4px;
+}
+
+.notice {
+  font-size: 0.8rem;
+  color: #666;
+}
