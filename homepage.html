@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hansae Charity Auction – 로그인</title>
+  <style>
+    :root {
+      --blue: #3182f6;
+      --blue-soft: #e8f2ff;
+      --bg: #f5f7fb;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --card: #ffffff;
+      --danger: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: radial-gradient(circle at top, #eef3ff 0, #f5f7fb 40%, #edf2ff 100%);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont,
+        "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .app {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 상단 네비게이션 바 */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(245, 247, 251, 0.9);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(229, 231, 235, 0.8);
+    }
+
+    .topbar-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #3182f6, #4f46e5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 800;
+      font-size: 17px;
+    }
+
+    .brand-text-main {
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .brand-text-sub {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .pill {
+      background: #eff4ff;
+      color: #1d4ed8;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    /* 메인 영역 */
+    .main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px 16px 32px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--card);
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
+      padding: 24px 22px 20px;
+    }
+
+    .card-header {
+      margin-bottom: 14px;
+    }
+
+    .card-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .card-subtitle {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .badge-soft {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 8px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      background: var(--blue-soft);
+      color: #1d4ed8;
+    }
+
+    form {
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    label {
+      font-size: 12px;
+      font-weight: 500;
+      margin-bottom: 2px;
+      display: block;
+    }
+
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      padding: 9px 12px;
+      font-size: 13px;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.12s ease, box-shadow 0.12s ease,
+        background 0.12s ease;
+    }
+
+    input::placeholder {
+      color: #9ca3af;
+    }
+
+    input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 1px rgba(49, 130, 246, 0.1);
+      background: #ffffff;
+    }
+
+    .input-group {
+      margin-bottom: 2px;
+    }
+
+    .hint {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .btn {
+      border-radius: 999px;
+      border: none;
+      padding: 9px 14px;
+      font-size: 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-decoration: none;
+      transition: transform 0.08s ease, box-shadow 0.1s ease,
+        background 0.12s ease;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--blue);
+      color: #ffffff;
+      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
+      font-weight: 600;
+      width: 100%;
+      margin-top: 2px;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      font-size: 11px;
+      padding: 4px 8px;
+      box-shadow: none;
+    }
+
+    .btn-ghost:hover {
+      text-decoration: underline;
+    }
+
+    .footer-row {
+      margin-top: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .status {
+      font-size: 11px;
+      margin-top: 4px;
+      min-height: 14px;
+    }
+
+    .status-ok {
+      color: #16a34a;
+    }
+
+    .status-error {
+      color: var(--danger);
+    }
+
+    footer {
+      border-top: 1px solid #e5e7eb;
+      background: #f9fafb;
+      padding: 10px 20px 14px 20px;
+      font-size: 11px;
+      color: #9ca3af;
+      margin-top: auto;
+    }
+
+    footer .inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <!-- 상단 바 -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-logo">H</div>
+        <div>
+          <div class="brand-text-main">Hansae Charity Auction</div>
+          <div class="brand-text-sub">사내 자선경매 전용 로그인 페이지</div>
+        </div>
+      </div>
+      <div>
+        <span class="pill">Internal Only · v1.0</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 메인 -->
+  <main class="main">
+    <div class="card">
+      <div class="card-header">
+        <div id="modeTitle" class="card-title">이메일 등록 후 시작하기</div>
+        <div id="modeSubtitle" class="card-subtitle">
+          회사 이메일과 비밀번호를 한 번 설정하면,<br />
+          같은 브라우저에서는 바로 경매 페이지로 이동할 수 있습니다.
+        </div>
+        <div class="badge-soft">
+          🔒 브라우저(LocalStorage)에만 저장 · 서버 전송 없음
+        </div>
+      </div>
+
+      <form id="authForm">
+        <div class="input-group">
+          <label for="emailInput">이메일</label>
+          <input
+            type="email"
+            id="emailInput"
+            placeholder="예: name@hansae.co.kr"
+            autocomplete="email"
+            required
+          />
+          <div class="hint" id="emailHint">
+            사내 사용 목적이므로 회사 메일 사용을 권장드립니다.
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="passwordInput" id="passwordLabel">비밀번호 설정</label>
+          <input
+            type="password"
+            id="passwordInput"
+            placeholder="6자 이상 입력해 주세요."
+            autocomplete="new-password"
+            required
+          />
+          <div class="hint" id="passwordHint">
+            브라우저에만 저장되며, 최소 6자 이상을 권장드립니다.
+          </div>
+        </div>
+
+        <div class="input-group" id="passwordConfirmGroup">
+          <label for="passwordConfirmInput">비밀번호 확인</label>
+          <input
+            type="password"
+            id="passwordConfirmInput"
+            placeholder="비밀번호를 한 번 더 입력해 주세요."
+            autocomplete="new-password"
+          />
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="submitBtn">
+          등록 후 경매 페이지로 이동
+        </button>
+
+        <div class="footer-row">
+          <span id="modeToggleText">
+            이미 등록하셨나요?
+          </span>
+          <button type="button" class="btn btn-ghost" id="modeToggleBtn">
+            로그인 화면으로 전환
+          </button>
+        </div>
+
+        <div class="footer-row">
+          <span>테스트를 다시 시작하고 싶으신가요?</span>
+          <button type="button" class="btn btn-ghost" id="resetBtn">
+            저장된 이메일/비밀번호 삭제
+          </button>
+        </div>
+
+        <div id="status" class="status"></div>
+      </form>
+    </div>
+  </main>
+
+  <footer>
+    <div class="inner">
+      <span>© 2025 Hansae Charity Auction (Internal Prototype)</span>
+      <span>로그인 정보는 이 브라우저의 LocalStorage에만 저장됩니다.</span>
+    </div>
+  </footer>
+</div>
+
+<script>
+  const USER_KEY = "charityAuctionUser";
+  // 👉 여기 경매 카탈로그 페이지 주소만 실제 파일명에 맞게 수정해서 사용하세요.
+  // 예: 기존 카탈로그 페이지 파일명을 catalog.html로 변경했다면 그대로 두시면 됩니다.
+  const CATALOG_URL = "catalog.html";
+
+  const $ = (s) => document.querySelector(s);
+
+  function loadUser() {
+    const raw = localStorage.getItem(USER_KEY);
+    if (!raw) return null;
+    try {
+      return JSON.parse(raw);
+    } catch {
+      return null;
+    }
+  }
+
+  function saveUser(user) {
+    localStorage.setItem(USER_KEY, JSON.stringify(user));
+  }
+
+  function clearUser() {
+    localStorage.removeItem(USER_KEY);
+  }
+
+  function setStatus(msg, type = "ok") {
+    const el = $("#status");
+    el.textContent = msg || "";
+    el.className = "status " + (type === "error" ? "status-error" : "status-ok");
+  }
+
+  function isValidEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  }
+
+  function initAuthPage() {
+    const user = loadUser();
+    const emailInput = $("#emailInput");
+    const passwordInput = $("#passwordInput");
+    const passwordConfirmInput = $("#passwordConfirmInput");
+    const passwordConfirmGroup = $("#passwordConfirmGroup");
+    const authForm = $("#authForm");
+    const modeToggleBtn = $("#modeToggleBtn");
+    const modeToggleText = $("#modeToggleText");
+    const resetBtn = $("#resetBtn");
+    const modeTitle = $("#modeTitle");
+    const modeSubtitle = $("#modeSubtitle");
+    const passwordLabel = $("#passwordLabel");
+    const passwordHint = $("#passwordHint");
+    const emailHint = $("#emailHint");
+    const submitBtn = $("#submitBtn");
+
+    let mode = user ? "login" : "register"; // 기본 상태: 저장된 유저가 있으면 로그인 모드
+
+    function renderMode() {
+      if (mode === "register") {
+        modeTitle.textContent = "이메일 등록 후 시작하기";
+        modeSubtitle.innerHTML =
+          "회사 이메일과 비밀번호를 한 번만 설정하면,<br />같은 브라우저에서는 바로 경매 페이지로 이동할 수 있습니다.";
+        passwordLabel.textContent = "비밀번호 설정";
+        passwordHint.textContent = "브라우저에만 저장되며, 최소 6자 이상을 권장드립니다.";
+        submitBtn.textContent = "등록 후 경매 페이지로 이동";
+        modeToggleText.textContent = "이미 등록하셨나요?";
+        modeToggleBtn.textContent = "로그인 화면으로 전환";
+        passwordConfirmGroup.style.display = "block";
+        emailInput.readOnly = false;
+        emailInput.style.backgroundColor = "#ffffff";
+        emailInput.value = user?.email || "";
+        emailHint.textContent = "사내 사용 목적이므로 회사 메일 사용을 권장드립니다.";
+        setStatus("");
+      } else {
+        modeTitle.textContent = "로그인 후 경매 페이지로 이동";
+        modeSubtitle.innerHTML =
+          "이미 이 브라우저에서 이메일을 등록하셨다면,<br />비밀번호만 입력하고 바로 경매 페이지로 이동할 수 있습니다.";
+        passwordLabel.textContent = "비밀번호";
+        passwordHint.textContent = "등록하셨던 비밀번호를 입력해 주세요.";
+        submitBtn.textContent = "로그인 후 경매 페이지로 이동";
+        modeToggleText.textContent = "처음 이용하시는 경우";
+        modeToggleBtn.textContent = "이메일 등록 화면으로 전환";
+        passwordConfirmGroup.style.display = "none";
+        if (user && user.email) {
+          emailInput.value = user.email;
+          emailInput.readOnly = true;
+          emailInput.style.backgroundColor = "#f9fafb";
+          emailHint.textContent = "이미 등록된 이메일입니다. 비밀번호만 입력해 주세요.";
+        } else {
+          emailInput.readOnly = false;
+          emailInput.style.backgroundColor = "#ffffff";
+          emailHint.textContent = "처음 이용 시, 이메일을 등록해 주세요.";
+        }
+        setStatus("");
+      }
+      passwordInput.value = "";
+      passwordConfirmInput.value = "";
+    }
+
+    authForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const email = emailInput.value.trim();
+      const password = passwordInput.value.trim();
+      const confirm = passwordConfirmInput.value.trim();
+
+      if (!isValidEmail(email)) {
+        setStatus("올바른 이메일 형식을 입력해 주세요.", "error");
+        emailInput.focus();
+        return;
+      }
+
+      if (!password || password.length < 6) {
+        setStatus("비밀번호는 최소 6자 이상 입력해 주세요.", "error");
+        passwordInput.focus();
+        return;
+      }
+
+      if (mode === "register") {
+        if (!confirm) {
+          setStatus("비밀번호 확인을 입력해 주세요.", "error");
+          passwordConfirmInput.focus();
+          return;
+        }
+        if (password !== confirm) {
+          setStatus("비밀번호와 비밀번호 확인이 일치하지 않습니다.", "error");
+          passwordConfirmInput.focus();
+          return;
+        }
+
+        // 저장 및 이동
+        saveUser({ email, password });
+        setStatus("등록이 완료되었습니다. 경매 페이지로 이동합니다.", "ok");
+        setTimeout(() => {
+          window.location.href = CATALOG_URL;
+        }, 400);
+      } else {
+        const stored = loadUser();
+        if (!stored || !stored.email || !stored.password) {
+          setStatus("저장된 사용자 정보가 없습니다. 먼저 이메일을 등록해 주세요.", "error");
+          mode = "register";
+          renderMode();
+          return;
+        }
+        if (email !== stored.email) {
+          setStatus("저장된 이메일과 일치하지 않습니다.", "error");
+          return;
+        }
+        if (password !== stored.password) {
+          setStatus("비밀번호가 일치하지 않습니다.", "error");
+          passwordInput.focus();
+          return;
+        }
+
+        setStatus("로그인에 성공했습니다. 경매 페이지로 이동합니다.", "ok");
+        setTimeout(() => {
+          window.location.href = CATALOG_URL;
+        }, 400);
+      }
+    });
+
+    modeToggleBtn.addEventListener("click", () => {
+      mode = mode === "register" ? "login" : "register";
+      renderMode();
+    });
+
+    resetBtn.addEventListener("click", () => {
+      if (confirm("저장된 이메일/비밀번호를 모두 삭제하시겠습니까?")) {
+        clearUser();
+        setStatus("저장된 로그인 정보가 초기화되었습니다.", "ok");
+        mode = "register";
+        renderMode();
+      }
+    });
+
+    renderMode();
+  }
+
+  document.addEventListener("DOMContentLoaded", initAuthPage);
+</script>
+</body>
+</html>
