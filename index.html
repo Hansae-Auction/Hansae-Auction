@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Hansae Charity Auction – 로그인</title>
+  <title>Hansae Charity Auction – Catalog</title>
   <style>
     :root {
       --blue: #3182f6;
@@ -13,7 +13,6 @@
       --muted: #6b7280;
       --border: #e5e7eb;
       --card: #ffffff;
-      --danger: #ef4444;
     }
 
     * {
@@ -22,17 +21,14 @@
 
     body {
       margin: 0;
-      background: radial-gradient(circle at top, #eef3ff 0, #f5f7fb 40%, #edf2ff 100%);
+      background: var(--bg);
       color: var(--text);
       font-family: system-ui, -apple-system, BlinkMacSystemFont,
         "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
     }
 
     .app {
-      flex: 1;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
@@ -48,7 +44,7 @@
     }
 
     .topbar-inner {
-      max-width: 960px;
+      max-width: 1120px;
       margin: 0 auto;
       padding: 14px 20px;
       display: flex;
@@ -64,8 +60,8 @@
     }
 
     .brand-logo {
-      width: 32px;
-      height: 32px;
+      width: 30px;
+      height: 30px;
       border-radius: 12px;
       background: linear-gradient(135deg, #3182f6, #4f46e5);
       display: flex;
@@ -73,7 +69,7 @@
       justify-content: center;
       color: #fff;
       font-weight: 800;
-      font-size: 17px;
+      font-size: 16px;
     }
 
     .brand-text-main {
@@ -82,6 +78,14 @@
     }
 
     .brand-text-sub {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       font-size: 11px;
       color: var(--muted);
     }
@@ -95,74 +99,121 @@
       font-weight: 500;
     }
 
-    /* 메인 영역 */
-    .main {
+    /* 메인 컨테이너 */
+    .container {
       flex: 1;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 18px 20px 32px 20px;
+    }
+
+    .page-header {
       display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 24px 16px 32px;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      margin-bottom: 16px;
     }
 
-    .card {
-      width: 100%;
-      max-width: 420px;
-      background: var(--card);
-      border-radius: 20px;
-      border: 1px solid var(--border);
-      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
-      padding: 24px 22px 20px;
-    }
-
-    .card-header {
-      margin-bottom: 14px;
-    }
-
-    .card-title {
-      font-size: 20px;
+    .page-title {
+      font-size: 22px;
       font-weight: 700;
       margin-bottom: 4px;
     }
 
-    .card-subtitle {
+    .page-desc {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .hero-box {
+      margin-top: 8px;
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 10px 12px;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 4px 10px rgba(15, 23, 42, 0.03);
       font-size: 12px;
       color: var(--muted);
-      line-height: 1.5;
     }
 
-    .badge-soft {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      margin-top: 8px;
-      padding: 3px 8px;
-      border-radius: 999px;
-      font-size: 11px;
-      background: var(--blue-soft);
-      color: #1d4ed8;
+    .hero-box b {
+      color: #111827;
     }
 
-    form {
-      margin-top: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    label {
+    /* 이메일 가입 카드 */
+    .signup-card {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 12px 14px;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 4px 10px rgba(15, 23, 42, 0.03);
       font-size: 12px;
-      font-weight: 500;
-      margin-bottom: 2px;
-      display: block;
+      max-width: 280px;
     }
 
-    input[type="email"],
-    input[type="password"] {
-      width: 100%;
+    .signup-title {
+      font-weight: 600;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+
+    .signup-desc {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .signup-form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+
+    .signup-form input[type="email"] {
+      flex: 1;
+      min-width: 160px;
+    }
+
+    .signup-status {
+      font-size: 11px;
+      color: #16a34a; /* 초록색 상태 메시지 */
+    }
+
+    /* 필터 바 */
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-top: 4px;
+      margin-bottom: 10px;
+    }
+
+    .search-input-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 180px;
+    }
+
+    .search-input-wrap svg {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      stroke: #9ca3af;
+    }
+
+    input,
+    select {
       border-radius: 999px;
       border: 1px solid var(--border);
       background: #ffffff;
-      padding: 9px 12px;
+      padding: 8px 12px;
       font-size: 13px;
       color: var(--text);
       outline: none;
@@ -174,20 +225,20 @@
       color: #9ca3af;
     }
 
-    input:focus {
+    input:focus,
+    select:focus {
       border-color: var(--blue);
       box-shadow: 0 0 0 1px rgba(49, 130, 246, 0.1);
       background: #ffffff;
     }
 
-    .input-group {
-      margin-bottom: 2px;
+    .search-input {
+      width: 100%;
+      padding-left: 30px;
     }
 
-    .hint {
-      font-size: 11px;
-      color: var(--muted);
-      margin-top: 2px;
+    select {
+      min-width: 130px;
     }
 
     .btn {
@@ -198,7 +249,6 @@
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      justify-content: center;
       gap: 6px;
       text-decoration: none;
       transition: transform 0.08s ease, box-shadow 0.1s ease,
@@ -211,8 +261,6 @@
       color: #ffffff;
       box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
       font-weight: 600;
-      width: 100%;
-      margin-top: 2px;
     }
 
     .btn-primary:hover {
@@ -220,40 +268,151 @@
       box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
     }
 
-    .btn-ghost {
-      background: transparent;
-      color: var(--muted);
-      font-size: 11px;
-      padding: 4px 8px;
-      box-shadow: none;
+    /* 그룹/카드 그리드 */
+    .group {
+      margin-top: 20px;
     }
 
-    .btn-ghost:hover {
-      text-decoration: underline;
-    }
-
-    .footer-row {
-      margin-top: 8px;
+    .group-header {
       display: flex;
-      justify-content: space-between;
       align-items: center;
       gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .group-title {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .group-count {
       font-size: 11px;
+      color: var(--muted);
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #e5edff;
+      color: #1d4ed8;
+      font-weight: 500;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    @media (max-width: 1024px) {
+      .grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 768px) {
+      .page-header {
+        flex-direction: column;
+      }
+
+      .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 520px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    a.card-link {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.03);
+      transition: transform 0.1s ease, box-shadow 0.1s ease,
+        border-color 0.12s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+      border-color: #cbd5f5;
+    }
+
+    .thumb {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      background: #f9fafb;
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px dashed #d1d5db;
+    }
+
+    .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      min-height: 38px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .price-row {
+      font-size: 12px;
       color: var(--muted);
     }
 
-    .status {
+    .price-row b {
+      color: #111827;
+    }
+
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 2px;
+    }
+
+    .badge {
+      padding: 3px 8px;
+      border-radius: 999px;
       font-size: 11px;
-      margin-top: 4px;
-      min-height: 14px;
+      background: #f3f4f6;
+      color: #4b5563;
     }
 
-    .status-ok {
-      color: #16a34a;
+    .badge-blue {
+      background: var(--blue-soft);
+      color: #1d4ed8;
     }
 
-    .status-error {
-      color: var(--danger);
+    .empty-state {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .empty-state b {
+      color: #111827;
     }
 
     footer {
@@ -262,11 +421,10 @@
       padding: 10px 20px 14px 20px;
       font-size: 11px;
       color: #9ca3af;
-      margin-top: auto;
     }
 
     footer .inner {
-      max-width: 960px;
+      max-width: 1120px;
       margin: 0 auto;
       display: flex;
       justify-content: space-between;
@@ -285,278 +443,322 @@
         <div class="brand-logo">H</div>
         <div>
           <div class="brand-text-main">Hansae Charity Auction</div>
-          <div class="brand-text-sub">사내 자선경매 전용 로그인 페이지</div>
+          <div class="brand-text-sub">사내 자선경매 물품을 한눈에 보고, 원하는 상품만 골라 입찰하기</div>
         </div>
       </div>
-      <div>
-        <span class="pill">Internal Only · v1.0</span>
+      <div class="topbar-right">
+        <span class="pill">내부 테스트용</span>
+        <span>v1.0</span>
       </div>
     </div>
   </div>
 
   <!-- 메인 -->
-  <main class="main">
-    <div class="card">
-      <div class="card-header">
-        <div id="modeTitle" class="card-title">이메일 등록 후 시작하기</div>
-        <div id="modeSubtitle" class="card-subtitle">
-          회사 이메일과 비밀번호를 한 번 설정하면,<br />
-          같은 브라우저에서는 바로 경매 페이지로 이동할 수 있습니다.
+  <main class="container">
+    <div class="page-header">
+      <div>
+        <div class="page-title">경매 물품 카탈로그</div>
+        <div class="page-desc">
+          LOT 별 이미지를 보면서 원하는 물품을 선택해 <b>입찰 페이지</b>로 이동할 수 있습니다.
         </div>
-        <div class="badge-soft">
-          🔒 브라우저(LocalStorage)에만 저장 · 서버 전송 없음
+        <div class="hero-box">
+          • 검색창에 <b>제목, 색상, 사이즈</b>를 입력해 바로 찾을 수 있어요.<br />
+          • 카드를 클릭하면 해당 LOT의 <b>상세/댓글 입찰 페이지</b>(<code>charity_auction.html</code>)로 이동합니다.
         </div>
       </div>
 
-      <form id="authForm">
-        <div class="input-group">
-          <label for="emailInput">이메일</label>
-          <input
-            type="email"
-            id="emailInput"
-            placeholder="예: name@hansae.co.kr"
-            autocomplete="email"
-            required
-          />
-          <div class="hint" id="emailHint">
-            사내 사용 목적이므로 회사 메일 사용을 권장드립니다.
+      <!-- 이메일 가입 카드 + 전체 페이지 버튼 -->
+      <div>
+        <div class="signup-card">
+          <div class="signup-title">이메일로 경매 참여하기</div>
+          <div class="signup-desc">
+            입찰 전, 회사 이메일을 한 번만 등록해 주세요. (브라우저에만 저장됩니다.)
           </div>
+          <form id="emailForm" class="signup-form">
+            <input
+              type="email"
+              id="emailInput"
+              placeholder="회사 이메일 주소"
+              required
+            />
+            <button type="submit" class="btn btn-primary">등록</button>
+          </form>
+          <div id="emailStatus" class="signup-status"></div>
         </div>
 
-        <div class="input-group">
-          <label for="passwordInput" id="passwordLabel">비밀번호 설정</label>
-          <input
-            type="password"
-            id="passwordInput"
-            placeholder="6자 이상 입력해 주세요."
-            autocomplete="new-password"
-            required
-          />
-          <div class="hint" id="passwordHint">
-            브라우저에만 저장되며, 최소 6자 이상을 권장드립니다.
-          </div>
-        </div>
-
-        <div class="input-group" id="passwordConfirmGroup">
-          <label for="passwordConfirmInput">비밀번호 확인</label>
-          <input
-            type="password"
-            id="passwordConfirmInput"
-            placeholder="비밀번호를 한 번 더 입력해 주세요."
-            autocomplete="new-password"
-          />
-        </div>
-
-        <button type="submit" class="btn btn-primary" id="submitBtn">
-          등록 후 경매 페이지로 이동
-        </button>
-
-        <div class="footer-row">
-          <span id="modeToggleText">
-            이미 등록하셨나요?
-          </span>
-          <button type="button" class="btn btn-ghost" id="modeToggleBtn">
-            로그인 화면으로 전환
-          </button>
-        </div>
-
-        <div class="footer-row">
-          <span>테스트를 다시 시작하고 싶으신가요?</span>
-          <button type="button" class="btn btn-ghost" id="resetBtn">
-            저장된 이메일/비밀번호 삭제
-          </button>
-        </div>
-
-        <div id="status" class="status"></div>
-      </form>
+    <!-- 필터 -->
+    <div class="filters">
+      <div class="search-input-wrap">
+        <svg viewBox="0 0 24 24" fill="none">
+          <circle cx="11" cy="11" r="6" stroke-width="1.6"></circle>
+          <path d="m15.5 15.5 3.5 3.5" stroke-width="1.6" stroke-linecap="round"></path>
+        </svg>
+        <input
+          id="q"
+          class="search-input"
+          type="text"
+          placeholder="제목, 색상, 사이즈 검색..."
+        />
+      </div>
+      <select id="cat">
+        <option value="">모든 카테고리</option>
+      </select>
     </div>
+
+    <!-- 카탈로그 영역 -->
+    <div id="catalog"></div>
   </main>
 
   <footer>
     <div class="inner">
       <span>© 2025 Hansae Charity Auction (Internal Prototype)</span>
-      <span>로그인 정보는 이 브라우저의 LocalStorage에만 저장됩니다.</span>
+      <span>데이터는 브라우저(LocalStorage)에만 저장되며, 새로 설치한 PC에서는 초기화됩니다.</span>
     </div>
   </footer>
 </div>
 
 <script>
-  const USER_KEY = "charityAuctionUser";
-  // 👉 여기 경매 카탈로그 페이지 주소만 실제 파일명에 맞게 수정해서 사용하세요.
-  // 예: 기존 카탈로그 페이지 파일명을 catalog.html로 변경했다면 그대로 두시면 됩니다.
-  const CATALOG_URL = "catalog.html";
-
   const $ = (s) => document.querySelector(s);
+  const fmt = (n) =>
+    n?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+  const USER_KEY = "charityAuctionUser";
+
+  function loadState() {
+    const raw = localStorage.getItem("charityAuctionV1");
+    if (!raw) return null;
+    try {
+      return JSON.parse(raw);
+    } catch (e) {
+      return null;
+    }
+  }
 
   function loadUser() {
     const raw = localStorage.getItem(USER_KEY);
     if (!raw) return null;
     try {
       return JSON.parse(raw);
-    } catch {
+    } catch (e) {
       return null;
     }
   }
 
-  function saveUser(user) {
-    localStorage.setItem(USER_KEY, JSON.stringify(user));
-  }
+  function initEmailSignup() {
+    const form = document.getElementById("emailForm");
+    const input = document.getElementById("emailInput");
+    const status = document.getElementById("emailStatus");
+    if (!form || !input || !status) return;
 
-  function clearUser() {
-    localStorage.removeItem(USER_KEY);
-  }
-
-  function setStatus(msg, type = "ok") {
-    const el = $("#status");
-    el.textContent = msg || "";
-    el.className = "status " + (type === "error" ? "status-error" : "status-ok");
-  }
-
-  function isValidEmail(email) {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
-  }
-
-  function initAuthPage() {
-    const user = loadUser();
-    const emailInput = $("#emailInput");
-    const passwordInput = $("#passwordInput");
-    const passwordConfirmInput = $("#passwordConfirmInput");
-    const passwordConfirmGroup = $("#passwordConfirmGroup");
-    const authForm = $("#authForm");
-    const modeToggleBtn = $("#modeToggleBtn");
-    const modeToggleText = $("#modeToggleText");
-    const resetBtn = $("#resetBtn");
-    const modeTitle = $("#modeTitle");
-    const modeSubtitle = $("#modeSubtitle");
-    const passwordLabel = $("#passwordLabel");
-    const passwordHint = $("#passwordHint");
-    const emailHint = $("#emailHint");
-    const submitBtn = $("#submitBtn");
-
-    let mode = user ? "login" : "register"; // 기본 상태: 저장된 유저가 있으면 로그인 모드
-
-    function renderMode() {
-      if (mode === "register") {
-        modeTitle.textContent = "이메일 등록 후 시작하기";
-        modeSubtitle.innerHTML =
-          "회사 이메일과 비밀번호를 한 번만 설정하면,<br />같은 브라우저에서는 바로 경매 페이지로 이동할 수 있습니다.";
-        passwordLabel.textContent = "비밀번호 설정";
-        passwordHint.textContent = "브라우저에만 저장되며, 최소 6자 이상을 권장드립니다.";
-        submitBtn.textContent = "등록 후 경매 페이지로 이동";
-        modeToggleText.textContent = "이미 등록하셨나요?";
-        modeToggleBtn.textContent = "로그인 화면으로 전환";
-        passwordConfirmGroup.style.display = "block";
-        emailInput.readOnly = false;
-        emailInput.style.backgroundColor = "#ffffff";
-        emailInput.value = user?.email || "";
-        emailHint.textContent = "사내 사용 목적이므로 회사 메일 사용을 권장드립니다.";
-        setStatus("");
-      } else {
-        modeTitle.textContent = "로그인 후 경매 페이지로 이동";
-        modeSubtitle.innerHTML =
-          "이미 이 브라우저에서 이메일을 등록하셨다면,<br />비밀번호만 입력하고 바로 경매 페이지로 이동할 수 있습니다.";
-        passwordLabel.textContent = "비밀번호";
-        passwordHint.textContent = "등록하셨던 비밀번호를 입력해 주세요.";
-        submitBtn.textContent = "로그인 후 경매 페이지로 이동";
-        modeToggleText.textContent = "처음 이용하시는 경우";
-        modeToggleBtn.textContent = "이메일 등록 화면으로 전환";
-        passwordConfirmGroup.style.display = "none";
-        if (user && user.email) {
-          emailInput.value = user.email;
-          emailInput.readOnly = true;
-          emailInput.style.backgroundColor = "#f9fafb";
-          emailHint.textContent = "이미 등록된 이메일입니다. 비밀번호만 입력해 주세요.";
-        } else {
-          emailInput.readOnly = false;
-          emailInput.style.backgroundColor = "#ffffff";
-          emailHint.textContent = "처음 이용 시, 이메일을 등록해 주세요.";
-        }
-        setStatus("");
-      }
-      passwordInput.value = "";
-      passwordConfirmInput.value = "";
+    const saved = loadUser();
+    if (saved && saved.email) {
+      status.textContent = `등록된 이메일: ${saved.email}`;
     }
 
-    authForm.addEventListener("submit", (e) => {
+    form.addEventListener("submit", (e) => {
       e.preventDefault();
-      const email = emailInput.value.trim();
-      const password = passwordInput.value.trim();
-      const confirm = passwordConfirmInput.value.trim();
-
-      if (!isValidEmail(email)) {
-        setStatus("올바른 이메일 형식을 입력해 주세요.", "error");
-        emailInput.focus();
+      const email = input.value.trim();
+      if (!email) {
+        alert("이메일을 입력해 주세요.");
+        return;
+      }
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        alert("올바른 이메일 형식을 입력해 주세요.");
         return;
       }
 
-      if (!password || password.length < 6) {
-        setStatus("비밀번호는 최소 6자 이상 입력해 주세요.", "error");
-        passwordInput.focus();
-        return;
-      }
-
-      if (mode === "register") {
-        if (!confirm) {
-          setStatus("비밀번호 확인을 입력해 주세요.", "error");
-          passwordConfirmInput.focus();
-          return;
-        }
-        if (password !== confirm) {
-          setStatus("비밀번호와 비밀번호 확인이 일치하지 않습니다.", "error");
-          passwordConfirmInput.focus();
-          return;
-        }
-
-        // 저장 및 이동
-        saveUser({ email, password });
-        setStatus("등록이 완료되었습니다. 경매 페이지로 이동합니다.", "ok");
-        setTimeout(() => {
-          window.location.href = CATALOG_URL;
-        }, 400);
-      } else {
-        const stored = loadUser();
-        if (!stored || !stored.email || !stored.password) {
-          setStatus("저장된 사용자 정보가 없습니다. 먼저 이메일을 등록해 주세요.", "error");
-          mode = "register";
-          renderMode();
-          return;
-        }
-        if (email !== stored.email) {
-          setStatus("저장된 이메일과 일치하지 않습니다.", "error");
-          return;
-        }
-        if (password !== stored.password) {
-          setStatus("비밀번호가 일치하지 않습니다.", "error");
-          passwordInput.focus();
-          return;
-        }
-
-        setStatus("로그인에 성공했습니다. 경매 페이지로 이동합니다.", "ok");
-        setTimeout(() => {
-          window.location.href = CATALOG_URL;
-        }, 400);
-      }
+      const user = { email };
+      localStorage.setItem(USER_KEY, JSON.stringify(user));
+      status.textContent = `등록 완료: ${email}`;
+      input.value = "";
     });
-
-    modeToggleBtn.addEventListener("click", () => {
-      mode = mode === "register" ? "login" : "register";
-      renderMode();
-    });
-
-    resetBtn.addEventListener("click", () => {
-      if (confirm("저장된 이메일/비밀번호를 모두 삭제하시겠습니까?")) {
-        clearUser();
-        setStatus("저장된 로그인 정보가 초기화되었습니다.", "ok");
-        mode = "register";
-        renderMode();
-      }
-    });
-
-    renderMode();
   }
 
-  document.addEventListener("DOMContentLoaded", initAuthPage);
+  function render() {
+    const state = loadState();
+    const root = $("#catalog");
+    root.innerHTML = "";
+
+    if (!state || !Array.isArray(state.lots) || state.lots.length === 0) {
+      root.innerHTML =
+        '<div class="empty-state">아직 <b>등록된 LOT 데이터</b>가 없습니다.<br />먼저 <code>charity_auction(1).html</code>에서 LOT를 등록한 뒤 다시 접속해 주세요.</div>';
+      return;
+    }
+
+    // 카테고리 옵션 채우기
+    const cats = [
+      ...new Set(
+        state.lots
+          .map((l) => (l.category || "").trim())
+          .filter(Boolean)
+      ),
+    ].sort();
+    const catSel = $("#cat");
+    if (catSel.options.length === 1) {
+      cats.forEach((c) => {
+        const o = document.createElement("option");
+        o.value = c;
+        o.textContent = c;
+        catSel.appendChild(o);
+      });
+    }
+
+    // 필터 값
+    const q = ($("#q").value || "").toLowerCase();
+    const fcat = $("#cat").value;
+
+    let lots = state.lots.map((l, idx) => ({ ...l, _idx: idx }));
+
+    if (q) {
+      lots = lots.filter((l) =>
+        [l.title, l.color, l.size, l.category]
+          .join(" ")
+          .toLowerCase()
+          .includes(q)
+      );
+    }
+    if (fcat) {
+      lots = lots.filter((l) => (l.category || "") === fcat);
+    }
+
+    if (lots.length === 0) {
+      root.innerHTML =
+        '<div class="empty-state">조건에 맞는 물품이 없습니다.<br />검색어 또는 필터를 조정해 보세요.</div>';
+      return;
+    }
+
+    // 카테고리별 그룹화
+    const groups = {};
+    lots.forEach((l) => {
+      const key = l.category || "기타";
+      (groups[key] ||= []).push(l);
+    });
+
+    const catKeys = Object.keys(groups).sort();
+
+    catKeys.forEach((key) => {
+      const section = document.createElement("section");
+      section.className = "group";
+
+      const header = document.createElement("div");
+      header.className = "group-header";
+
+      const title = document.createElement("div");
+      title.className = "group-title";
+      title.textContent = key;
+
+      const count = document.createElement("div");
+      count.className = "group-count";
+      count.textContent = `${groups[key].length}개`;
+
+      header.appendChild(title);
+      header.appendChild(count);
+      section.appendChild(header);
+
+      const grid = document.createElement("div");
+      grid.className = "grid";
+
+      groups[key]
+        .sort((a, b) =>
+          (a.title || "").localeCompare(b.title || "")
+        )
+        .forEach((lot) => {
+          const link = document.createElement("a");
+          link.className = "card-link";
+
+          const lotId = (lot.id || "").toUpperCase();
+          link.href = `charity_auction.html?lot=${encodeURIComponent(
+            lotId
+          )}`;
+
+          // LOT 인덱스 기억해서 상세 페이지가 바로 해당 LOT로 열리도록
+          link.onclick = () => {
+            const st = loadState();
+            if (st && Array.isArray(st.lots)) {
+              const idx = st.lots.findIndex((x) => x.id === lot.id);
+              if (idx >= 0) {
+                st.currentLotIdx = idx;
+                localStorage.setItem(
+                  "charityAuctionV1",
+                  JSON.stringify(st)
+                );
+              }
+            }
+          };
+
+          const card = document.createElement("div");
+          card.className = "card";
+
+          const thumb = document.createElement("div");
+          thumb.className = "thumb";
+          if (lot.imageData) {
+            const img = document.createElement("img");
+            img.src = lot.imageData;
+            thumb.appendChild(img);
+          } else {
+            thumb.textContent = "이미지 없음";
+            thumb.style.fontSize = "11px";
+            thumb.style.color = "#9ca3af";
+          }
+
+          const t = document.createElement("div");
+          t.className = "card-title";
+          t.textContent = lot.title || "제목 없음";
+
+          const priceRow = document.createElement("div");
+          priceRow.className = "price-row";
+          priceRow.innerHTML = `시작가 <b>₩${fmt(
+            lot.startPrice || 0
+          )}</b>`;
+
+          const badges = document.createElement("div");
+          badges.className = "badges";
+
+          if (lot.gender) {
+            const b = document.createElement("span");
+            b.className = "badge badge-blue";
+            b.textContent = lot.gender;
+            badges.appendChild(b);
+          }
+          if (lot.size) {
+            const b = document.createElement("span");
+            b.className = "badge";
+            b.textContent = lot.size;
+            badges.appendChild(b);
+          }
+          if (lot.color) {
+            const b = document.createElement("span");
+            b.className = "badge";
+            b.textContent = lot.color;
+            badges.appendChild(b);
+          }
+
+          card.appendChild(thumb);
+          card.appendChild(t);
+          card.appendChild(priceRow);
+          if (badges.children.length > 0) {
+            card.appendChild(badges);
+          }
+
+          link.appendChild(card);
+          grid.appendChild(link);
+        });
+
+      section.appendChild(grid);
+      root.appendChild(section);
+    });
+  }
+
+  ["q", "cat"].forEach((id) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener("input", render);
+    el.addEventListener("change", render);
+  });
+
+  initEmailSignup();
+  render();
 </script>
 </body>
 </html>
