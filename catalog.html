@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hansae Charity Auction – 물품 리스트</title>
+  <style>
+    :root {
+      --blue: #3182f6;
+      --blue-soft: #e8f2ff;
+      --bg: #f5f7fb;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --card: #ffffff;
+      --danger: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: radial-gradient(circle at top, #eef3ff 0, #f5f7fb 40%, #edf2ff 100%);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont,
+        "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .app {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(245, 247, 251, 0.9);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(229, 231, 235, 0.8);
+    }
+
+    .topbar-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    .brand-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #3182f6, #4f46e5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 800;
+      font-size: 17px;
+    }
+
+    .brand-text-main {
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .brand-text-sub {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .pill {
+      background: #eff4ff;
+      color: #1d4ed8;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .btn {
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      padding: 8px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-decoration: none;
+      background: #ffffff;
+      color: var(--text);
+      transition: transform 0.08s ease, box-shadow 0.1s ease,
+        background 0.12s ease, border-color 0.12s ease;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      background: #f3f4ff;
+      border-color: #c7d2fe;
+      transform: translateY(-0.5px);
+      box-shadow: 0 4px 10px rgba(129, 140, 248, 0.15);
+    }
+
+    .btn-ghost {
+      background: #f9fafb;
+      border-style: dashed;
+    }
+
+    .profile-area {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      padding: 24px 16px 32px;
+    }
+
+    .page-inner {
+      width: 100%;
+      max-width: 1080px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .card {
+      width: 100%;
+      background: var(--card);
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.06);
+      padding: 18px 18px 16px;
+    }
+
+    .header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .subtitle {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .filter-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    input[type="text"],
+    select {
+      background: #f9fafb;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-size: 13px;
+      outline: none;
+    }
+
+    input[type="text"]:focus,
+    select:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 1px rgba(49, 130, 246, 0.12);
+      background: #ffffff;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .lot-card {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      background: #ffffff;
+      border-radius: 16px;
+      border: 1px solid #e5e7eb;
+      padding: 12px 12px 10px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+      transition: transform 0.08s ease, box-shadow 0.1s ease,
+        border-color 0.12s ease, background 0.12s ease;
+    }
+
+    .lot-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+      border-color: #c7d2fe;
+      background: #f9fafb;
+    }
+
+    .lot-title {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .lot-meta {
+      font-size: 11px;
+      color: #6b7280;
+      margin-bottom: 4px;
+    }
+
+    .lot-price-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-top: 4px;
+    }
+
+    .lot-price-main {
+      font-size: 15px;
+      font-weight: 800;
+      color: #111827;
+    }
+
+    .lot-price-ref {
+      font-size: 11px;
+      color: #6b7280;
+    }
+
+    .lot-tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 10px;
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      color: #4b5563;
+      gap: 4px;
+    }
+
+    .lot-tag.blue {
+      background: #eff6ff;
+      border-color: #bfdbfe;
+      color: #1d4ed8;
+    }
+
+    h3 {
+      font-size: 14px;
+      font-weight: 700;
+      margin: 18px 0 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    h3 span.pill {
+      font-size: 10px;
+      border-radius: 999px;
+      padding: 2px 6px;
+      background: #f3f4ff;
+      border: 1px solid #e5e7eb;
+      color: #4b5563;
+    }
+
+    h3 > span:nth-child(2) {
+      margin-left: auto;
+    }
+
+    .muted {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    footer {
+      border-top: 1px solid #e5e7eb;
+      background: #f9fafb;
+      padding: 10px 20px 14px 20px;
+      font-size: 11px;
+      color: #9ca3af;
+      margin-top: auto;
+    }
+
+    footer .inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    @media (max-width: 700px) {
+      .topbar-inner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .header-row {
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="topbar-inner">
+      <!-- 로고: 클릭 시 페이지 새로고침 -->
+      <a href="#" class="brand" id="logoLink">
+        <div class="brand-logo">H</div>
+        <div>
+          <div class="brand-text-main">Hansae Charity Auction</div>
+          <div class="brand-text-sub">자선경매 물품 리스트</div>
+        </div>
+      </a>
+
+      <!-- 닉네임 + 로그아웃 버튼 -->
+      <div class="profile-area">
+        <div class="pill" id="nicknamePill">로그인 후 이용해 주세요</div>
+        <button class="btn" id="logoutBtn" style="display:none;">로그아웃</button>
+      </div>
+    </div>
+  </div>
+
+  <main class="main">
+    <div class="page-inner">
+      <div class="card">
+        <div class="header-row">
+          <div>
+            <div class="title">경매 물품 목록</div>
+            <div class="subtitle">
+              참여를 원하는 물품을 선택하면, 해당 LOT 페이지로 이동하여 댓글로 입찰할 수 있습니다.
+            </div>
+          </div>
+          <button class="btn btn-ghost" id="refresh">목록 새로고침</button>
+        </div>
+
+        <div class="filter-row">
+          <input
+            type="text"
+            id="q"
+            placeholder="제목/색상/사이즈/성별 검색..."
+          />
+          <select id="cat">
+            <option value="">카테고리 전체</option>
+          </select>
+          <select id="gender">
+            <option value="">성별 전체</option>
+            <option value="FEMALE">여성용</option>
+            <option value="MALE">남성용</option>
+            <option value="UNISEX">UNISEX</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="listRoot" class="card">
+        <!-- JS로 LOT 카드 렌더링 -->
+      </div>
+
+      <div class="muted">
+        * LOT 정보는 <b>charity_auction.html</b>에서 관리됩니다. 이 페이지는 해당 정보를 읽어와 정렬·검색만 제공합니다.
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="inner">
+      <span>© 2025 Hansae Charity Auction (Internal Prototype)</span>
+      <span>모든 데이터는 이 브라우저의 LocalStorage에 저장됩니다.</span>
+    </div>
+  </footer>
+</div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const fmt = (n) => n?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+// 로그인 관련 키
+const USER_KEY = "charityAuctionUser";
+// 최초 가입자/닉네임 정보가 들어있는 리스트(다른 JS와 맞춰 사용)
+const USERS_LIST_KEY = "charityAuctionUsers";
+
+// 현재 로그인 유저 로드
+function loadCurrentUser() {
+  const raw = localStorage.getItem(USER_KEY);
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * 최초 설정한 닉네임을 최대한 복원하는 함수
+ * 1) USER_KEY 안에 nickname이 있으면 사용
+ * 2) 없으면 USERS_LIST_KEY(가입자 리스트)에서 email 기준으로 nickname 검색
+ * 3) 찾은 nickname은 USER_KEY에도 다시 저장해서 재로그인 후에도 유지
+ */
+function loadPersistentNickname() {
+  const raw = localStorage.getItem(USER_KEY);
+  if (!raw) return null;
+
+  let user;
+  try {
+    user = JSON.parse(raw);
+  } catch {
+    return null;
+  }
+
+  // 1) USER_KEY에 이미 nickname이 있는 경우
+  if (user.nickname && typeof user.nickname === "string" && user.nickname.trim() !== "") {
+    return user.nickname.trim();
+  }
+
+  // email 정보 없으면 더 이상 찾을 수 없음
+  if (!user.email) return null;
+
+  // 2) 가입자 리스트에서 nickname 찾아보기
+  try {
+    const rawList = localStorage.getItem(USERS_LIST_KEY);
+    if (!rawList) return null;
+
+    const list = JSON.parse(rawList);
+    if (!Array.isArray(list)) return null;
+
+    const found = list.find(
+      (u) => u && u.email === user.email && typeof u.nickname === "string" && u.nickname.trim() !== ""
+    );
+    if (!found) return null;
+
+    const nickname = found.nickname.trim();
+
+    // 3) 찾은 nickname을 USER_KEY에도 다시 저장해서 이후부터는 바로 사용
+    user.nickname = nickname;
+    localStorage.setItem(USER_KEY, JSON.stringify(user));
+
+    return nickname;
+  } catch {
+    return null;
+  }
+}
+
+// 상단 닉네임/로그아웃 버튼 UI 적용
+function applyNicknameToPill() {
+  const pill = document.getElementById("nicknamePill");
+  const logoutBtn = document.getElementById("logoutBtn");
+  if (!pill || !logoutBtn) return;
+
+  const user = loadCurrentUser();
+  const nickname = loadPersistentNickname();
+
+  if (user && user.isLoggedIn && nickname) {
+    pill.textContent = nickname + " 님";
+    logoutBtn.style.display = "inline-flex";
+  } else {
+    pill.textContent = "로그인 후 이용해 주세요";
+    logoutBtn.style.display = "none";
+  }
+}
+
+// 경매 데이터 로드
+function loadState() {
+  const raw = localStorage.getItem("charityAuctionV1");
+  if (!raw) {
+    return null;
+  }
+  try {
+    return JSON.parse(raw);
+  } catch (e) {
+    return null;
+  }
+}
+
+function groupLots(lots) {
+  const groups = {};
+  lots.forEach((lot) => {
+    const cat = lot.category || "기타";
+    if (!groups[cat]) groups[cat] = [];
+    groups[cat].push(lot);
+  });
+  return groups;
+}
+
+function render() {
+  const root = $("#listRoot");
+  root.innerHTML = "";
+
+  const state = loadState();
+  if (!state || !Array.isArray(state.lots) || !state.lots.length) {
+    const empty = document.createElement("div");
+    empty.className = "muted";
+    empty.innerHTML =
+      '데이터가 없습니다. 먼저 <b>charity_auction.html</b>에서 물품을 등록해 주세요.';
+    root.appendChild(empty);
+    return;
+  }
+
+  const q = ($("#q").value || "").trim().toLowerCase();
+  const catFilter = $("#cat").value || "";
+  const genderFilter = $("#gender").value || "";
+
+  // 카테고리 셀렉트 옵션 세팅
+  const cats = [
+    ...new Set(
+      state.lots
+        .map((l) => l.category || "기타")
+        .filter((v) => v && v.trim() !== "")
+    ),
+  ].sort((a, b) => a.localeCompare(b));
+
+  const catSelect = $("#cat");
+  catSelect.innerHTML = '<option value="">카테고리 전체</option>';
+  cats.forEach((c) => {
+    const opt = document.createElement("option");
+    opt.value = c;
+    opt.textContent = c;
+    catSelect.appendChild(opt);
+  });
+  if (catFilter) catSelect.value = catFilter;
+
+  let lots = state.lots.map((l, idx) => ({ ...l, _idx: idx }));
+
+  if (q) {
+    lots = lots.filter((lot) => {
+      const hay = [
+        lot.title,
+        lot.color,
+        lot.size,
+        lot.gender,
+        lot.notes,
+        lot.category,
+      ]
+        .join(" ")
+        .toLowerCase();
+      return hay.includes(q);
+    });
+  }
+
+  if (catFilter) {
+    lots = lots.filter((lot) => (lot.category || "기타") === catFilter);
+  }
+
+  if (genderFilter) {
+    lots = lots.filter(
+      (lot) => (lot.gender || "").toUpperCase() === genderFilter
+    );
+  }
+
+  if (!lots.length) {
+    const empty = document.createElement("div");
+    empty.className = "muted";
+    empty.textContent = "조건에 맞는 물품이 없습니다.";
+    root.appendChild(empty);
+    return;
+  }
+
+  const groups = groupLots(lots);
+
+  Object.keys(groups)
+    .sort((a, b) => a.localeCompare(b))
+    .forEach((key) => {
+      const section = document.createElement("section");
+
+      const h = document.createElement("h3");
+      h.innerHTML = `▾ <span>${key}</span> <span class="pill">${groups[key].length}</span>`;
+      section.appendChild(h);
+
+      const grid = document.createElement("div");
+      grid.className = "grid";
+
+      groups[key].sort((a, b) =>
+        (a.title || "").localeCompare(b.title || "")
+      );
+
+      groups[key].forEach((lot) => {
+        const a = document.createElement("a");
+        a.className = "lot-card";
+        a.href = `charity_auction.html?lot=${encodeURIComponent(lot.id)}`;
+
+        const title = document.createElement("div");
+        title.className = "lot-title";
+        title.textContent = lot.title || "(제목 없음)";
+        a.appendChild(title);
+
+        const meta = document.createElement("div");
+        meta.className = "lot-meta";
+        meta.textContent = [
+          lot.color || "",
+          lot.size || "",
+          lot.gender || "",
+        ]
+          .filter(Boolean)
+          .join(" / ");
+        a.appendChild(meta);
+
+        const priceRow = document.createElement("div");
+        priceRow.className = "lot-price-row";
+
+        const left = document.createElement("div");
+        const start = document.createElement("div");
+        start.className = "lot-price-main";
+        start.textContent = `시작가 ₩ ${fmt(lot.startPrice || 0)}`;
+        left.appendChild(start);
+
+        if (lot.currentBid) {
+          const cur = document.createElement("div");
+          cur.className = "lot-price-ref";
+          cur.textContent = `현재 최고가 ₩ ${fmt(lot.currentBid)}`;
+          left.appendChild(cur);
+        }
+
+        const tag = document.createElement("div");
+        tag.className = "lot-tag blue";
+        tag.innerHTML = `<span>LOT ${lot.id}</span>`;
+
+        priceRow.appendChild(left);
+        priceRow.appendChild(tag);
+
+        a.appendChild(priceRow);
+
+        grid.appendChild(a);
+      });
+
+      section.appendChild(grid);
+      root.appendChild(section);
+    });
+}
+
+// 필터 변경 시 렌더링
+["q", "cat", "gender"].forEach((id) =>
+  $("#" + id).addEventListener("input", render)
+);
+$("#refresh").addEventListener("click", render);
+
+// 로고 클릭 시 페이지 새로고침
+const logoLink = document.getElementById("logoLink");
+if (logoLink) {
+  logoLink.addEventListener("click", (e) => {
+    e.preventDefault();
+    window.location.reload();
+  });
+}
+
+// 로그아웃: isLoggedIn만 false로 변경 후 homepage로 이동
+const logoutBtn = document.getElementById("logoutBtn");
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", () => {
+    const raw = localStorage.getItem(USER_KEY);
+    if (raw) {
+      try {
+        const user = JSON.parse(raw);
+        user.isLoggedIn = false; // 정보 유지, 로그인 상태만 해제
+        localStorage.setItem(USER_KEY, JSON.stringify(user));
+      } catch (e) {
+        // 파싱 실패해도 그냥 넘어가고 이동
+      }
+    }
+    window.location.href = "participant.html";
+  });
+}
+
+render();
+applyNicknameToPill();
+</script>
+</body>
+</html>

@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hansae Charity Auction – 관리자 페이지</title>
+  <style>
+    :root {
+      --blue: #3182f6;
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --danger: #ef4444;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui,-apple-system,BlinkMacSystemFont,
+        "Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+      background: radial-gradient(circle at top,#eef3ff 0,#f5f7fb 40%,#edf2ff 100%);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+    }
+    .topbar {
+      padding: 14px 20px;
+      border-bottom: 1px solid rgba(229,231,235,0.8);
+      background: rgba(245,247,251,0.9);
+      backdrop-filter: blur(10px);
+    }
+    .topbar-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .brand { display:flex; align-items:center; gap:10px; }
+    .brand-logo {
+      width:32px; height:32px;
+      border-radius:12px;
+      background:linear-gradient(135deg,#3182f6,#4f46e5);
+      display:flex; align-items:center; justify-content:center;
+      color:#fff; font-weight:800; font-size:17px;
+    }
+    .brand-text-main { font-weight:700; font-size:16px; }
+    .brand-text-sub { font-size:11px; color:var(--muted); }
+    .pill {
+      background:#fee2e2;
+      color:#b91c1c;
+      padding:4px 8px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:500;
+    }
+    main {
+      flex:1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px 16px 32px;
+    }
+    .card {
+      max-width: 900px;
+      width:100%;
+      background:var(--card);
+      border-radius:20px;
+      border:1px solid var(--border);
+      box-shadow:0 18px 45px rgba(15,23,42,0.12);
+      padding:24px 22px 20px;
+    }
+    .title { font-size:20px; font-weight:700; margin-bottom:4px; }
+    .subtitle { font-size:12px; color:var(--muted); margin-bottom:14px; }
+    label {
+      font-size:12px; font-weight:500;
+      margin-bottom:2px; display:block;
+    }
+    input[type="password"] {
+      width:100%;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:#ffffff;
+      padding:9px 12px;
+      font-size:13px;
+      color:var(--text);
+      outline:none;
+      margin-bottom:8px;
+    }
+    .btn {
+      border-radius:999px;
+      border:none;
+      padding:9px 14px;
+      font-size:13px;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      text-decoration:none;
+      white-space:nowrap;
+      background:var(--blue);
+      color:#fff;
+      box-shadow:0 4px 10px rgba(37,99,235,0.25);
+      font-weight:600;
+    }
+    .btn-ghost {
+      background:#f3f4f6;
+      color:#374151;
+      box-shadow:none;
+    }
+    .btn-small {
+      padding:5px 10px;
+      font-size:11px;
+      box-shadow:none;
+    }
+    .btn-outline {
+      background:#ffffff;
+      color:#111827;
+      border:1px solid #d1d5db;
+      box-shadow:none;
+    }
+    .btn-danger {
+      background:#fee2e2;
+      color:#b91c1c;
+      box-shadow:none;
+      border:1px solid #fecaca;
+    }
+    .status {
+      font-size:11px;
+      min-height:14px;
+      margin-top:6px;
+    }
+    .status-error { color:var(--danger); }
+    .status-ok { color:#16a34a; }
+
+    .admin-body {
+      margin-top:8px;
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    /* 탭 영역 */
+    .tab-header {
+      display:flex;
+      gap:6px;
+      margin-bottom:10px;
+      border-bottom:1px solid var(--border);
+      padding-bottom:6px;
+    }
+    .tab-btn {
+      border:none;
+      background:transparent;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      cursor:pointer;
+      color:var(--muted);
+    }
+    .tab-btn.active {
+      background:rgba(49,130,246,0.1);
+      color:var(--blue);
+      font-weight:600;
+    }
+    .tab-content { margin-top:6px; font-size:13px; }
+
+    .table-wrapper {
+      margin-top:6px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:#f9fafb;
+      padding:10px;
+      max-height:260px;
+      overflow:auto;
+    }
+    table.user-table {
+      width:100%;
+      border-collapse:collapse;
+      font-size:12px;
+    }
+    table.user-table th,
+    table.user-table td {
+      padding:6px 8px;
+      border-bottom:1px solid #e5e7eb;
+      text-align:left;
+      white-space:nowrap;
+    }
+    table.user-table th {
+      font-weight:600;
+      color:#4b5563;
+      position:sticky;
+      top:0;
+      background:#f9fafb;
+      z-index:1;
+    }
+    table.user-table tr:last-child td { border-bottom:none; }
+    table.user-table td.empty {
+      text-align:center;
+      color:var(--muted);
+    }
+    .hint {
+      margin-top:6px;
+      font-size:11px;
+      color:var(--muted);
+    }
+
+    /* 경매 물품 관리 탭 */
+    .auction-header-row {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:12px;
+      flex-wrap:wrap;
+    }
+    .auction-title-main {
+      font-size:15px;
+      font-weight:600;
+    }
+    .auction-title-sub {
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .dropdown { position:relative; display:inline-block; }
+    .dropdown-menu {
+      position:absolute;
+      right:0;
+      margin-top:6px;
+      min-width:160px;
+      background:#ffffff;
+      border-radius:12px;
+      border:1px solid var(--border);
+      box-shadow:0 18px 45px rgba(15,23,42,0.16);
+      padding:4px;
+      z-index:20;
+    }
+    .dropdown-menu.hidden { display:none; }
+    .dropdown-menu button {
+      width:100%;
+      border:none;
+      background:transparent;
+      font-size:12px;
+      padding:7px 10px;
+      text-align:left;
+      border-radius:8px;
+      cursor:pointer;
+      color:#111827;
+    }
+    .dropdown-menu button:hover { background:#f3f4ff; }
+    .dropdown-divider {
+      margin:4px 0;
+      border-top:1px solid #e5e7eb;
+    }
+
+    .auction-groups {
+      margin-top:4px;
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+      gap:10px;
+    }
+    .auction-group {
+      background:#f9fafb;
+      border-radius:16px;
+      border:1px solid #e5e7eb;
+      padding:10px 10px 8px;
+    }
+    .auction-group-header {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      font-size:12px;
+      font-weight:600;
+      margin-bottom:6px;
+    }
+    .auction-group-header .count {
+      font-size:11px;
+      color:#6b7280;
+    }
+    .auction-group-body {
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+
+    .auction-item-row {
+      display:flex;
+      align-items:center;
+      gap:4px;
+    }
+    .auction-item-main {
+      flex:1;
+      border-radius:10px;
+      border:none;
+      background:#ffffff;
+      padding:6px 8px;
+      font-size:11px;
+      text-align:left;
+      cursor:pointer;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      box-shadow:0 1px 0 rgba(148,163,184,0.5);
+    }
+    .auction-item-main:hover { background:#eef2ff; }
+
+    .auction-item-delete {
+      border-radius:999px;
+      border:none;
+      padding:4px 7px;
+      font-size:10px;
+      cursor:pointer;
+      background:#fee2e2;
+      color:#b91c1c;
+    }
+    .auction-item-delete:hover { background:#fecaca; }
+
+    .auction-add-item {
+      margin-top:2px;
+      border-radius:10px;
+      border:1px dashed #c7d2fe;
+      background:#eef2ff;
+      padding:6px 8px;
+      font-size:11px;
+      text-align:center;
+      cursor:pointer;
+      color:#1d4ed8;
+    }
+    .auction-add-item:hover { background:#e0e7ff; }
+
+    footer {
+      border-top:1px solid #e5e7eb;
+      background:#f9fafb;
+      padding:10px 20px 14px 20px;
+      font-size:11px;
+      color:#9ca3af;
+    }
+    footer .inner {
+      max-width:960px;
+      margin:0 auto;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    @media (max-width:640px) {
+      .card { padding-inline:16px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-logo">H</div>
+        <div>
+          <div class="brand-text-main">Hansae Charity Auction</div>
+          <div class="brand-text-sub">관리자 전용 페이지</div>
+        </div>
+      </div>
+      <span class="pill">Admin Only</span>
+    </div>
+  </header>
+
+  <main>
+    <!-- 로그인 카드 -->
+    <div class="card" id="loginCard">
+      <div class="title">관리자 로그인</div>
+      <div class="subtitle">
+        관리자 전용 비밀번호를 입력해 주세요. (간이 보안용, 실서비스에서는 사용 자제)
+      </div>
+      <label for="adminPw">관리자 비밀번호</label>
+      <input type="password" id="adminPw" placeholder="관리자 전용 비밀번호" />
+      <button class="btn" id="adminLoginBtn">관리자 페이지 입장</button>
+      <div id="status" class="status"></div>
+    </div>
+
+    <!-- 관리자 카드 -->
+    <div class="card" id="adminCard" style="display:none;">
+      <div class="title">관리자 대시보드</div>
+      <div class="subtitle">
+        참여자/경매 물품을 한 곳에서 관리하는 내부용 화면입니다.
+      </div>
+
+      <div class="tab-header">
+        <button class="tab-btn active" data-tab="overview">대시보드</button>
+        <button class="tab-btn" data-tab="users">가입자 리스트</button>
+        <button class="tab-btn" data-tab="lots">경매 물품 관리</button>
+      </div>
+
+      <!-- 탭 1: 개요 -->
+      <div class="tab-content" id="tab-overview">
+        <div class="admin-body">
+          - 이 페이지에서는 다음 기능들을 사용할 수 있습니다.<br/>
+          · 참여자(이메일/닉네임/역할) 리스트 확인<br/>
+          · <b>온라인 자선경매 물품</b> 생성 / 삭제 / 수정 진입<br/>
+          <br/>
+          경매 물품 데이터는 브라우저 <code>localStorage</code>의
+          <code>charityAuctionV1</code> 키로 저장되며,<br/>
+          <b>charity_auction.html</b>과 <b>catalog.html</b>에서 동일하게 사용됩니다.
+        </div>
+      </div>
+
+      <!-- 탭 2: 가입자 리스트 -->
+      <div class="tab-content" id="tab-users" style="display:none;">
+        <div class="admin-body">
+          참여자 페이지에서 가입 시 저장된 정보입니다.<br/>
+          (이메일, 닉네임, 역할, <b>비밀번호(평문)</b>, 가입 일시)<br/>
+          * 테스트용이므로 실제 서비스에서는 비밀번호를 이렇게 저장하면 안 됩니다.
+        </div>
+
+        <div class="table-wrapper">
+          <table class="user-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>이메일</th>
+                <th>닉네임</th>
+                <th>역할</th>
+                <th>비밀번호</th>
+                <th>가입일시</th>
+              </tr>
+            </thead>
+            <tbody id="userTableBody">
+              <tr>
+                <td colspan="6" class="empty">현재 저장된 가입 정보가 없습니다.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <button class="btn btn-ghost" id="reloadUsersBtn">목록 새로고침</button>
+        <p class="hint">
+          * 같은 PC / 같은 브라우저에서 참여자 페이지를 통해 가입한 정보만 보입니다.<br/>
+          * 우선 <code>charityAuctionUsers</code>에 저장된 <code>password</code>를 사용하고,<br/>
+          &nbsp;&nbsp;해당 값이 없을 경우 현재 브라우저의 <code>charityAuctionUser</code>에 저장된 비밀번호를 보완해서 표시합니다.
+        </p>
+      </div>
+
+      <!-- 탭 3: 경매 물품 관리 -->
+      <div class="tab-content" id="tab-lots" style="display:none;">
+        <div class="auction-header-row">
+          <div>
+            <div class="auction-title-main">온라인 자선경매 물품 리스트</div>
+            <div class="auction-title-sub">
+              오른쪽 <b>새로 만들기</b>로 새 경매 물품 양식을 만들고,<br/>
+              물품 이름을 클릭하면 <b>charity_auction.html</b>에서 상세 내용 수정이 가능합니다.
+            </div>
+          </div>
+          <div class="dropdown">
+            <button class="btn btn-outline btn-small" id="newLotBtn">새로 만들기 ▾</button>
+            <div class="dropdown-menu hidden" id="newLotMenu">
+              <button type="button" data-cat="생활용품">생활용품</button>
+              <button type="button" data-cat="화장품/뷰티">화장품/뷰티</button>
+              <button type="button" data-cat="의류/잡화">의류/잡화</button>
+              <button type="button" data-cat="스포츠/레저">스포츠/레저</button>
+              <button type="button" data-cat="가전/디지털">가전/디지털</button>
+              <button type="button" data-cat="식품">식품</button>
+              <div class="dropdown-divider"></div>
+              <button type="button" data-action="newGroup">신규 그룹…</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="auctionGroups" class="auction-groups"></div>
+
+        <p class="hint">
+          * 각 그룹 하단의 <b>+ 새 물품</b> 버튼을 눌러도 해당 카테고리의 새 경매 물품이 생성됩니다.<br/>
+          * 물품 타이틀을 클릭하면 <b>charity_auction.html</b>의 해당 물품으로 이동하여<br/>
+          &nbsp;&nbsp;이미지 업로드, 시작가/틱, 기타 상세 정보를 수정할 수 있습니다.<br/>
+          * 각 물품 오른쪽 <b>삭제</b> 버튼을 누르면 해당 LOT가 완전히 삭제되며,<br/>
+          &nbsp;&nbsp;동일 데이터(<code>charityAuctionV1</code>)를 쓰는 <b>catalog.html</b>에서도 즉시 반영됩니다.
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="inner">
+      <span>© 2025 Hansae Charity Auction (Internal Prototype)</span>
+      <span>Admin view</span>
+    </div>
+  </footer>
+
+  <script>
+    // ===== 상수 및 키 =====
+    const ADMIN_PASSWORD     = "hansae-admin-1234";   // 간이 관리자 비밀번호
+    const USERS_LIST_KEY     = "charityAuctionUsers"; // 참여자 목록
+    const CURRENT_USER_KEY   = "charityAuctionUser";  // 현재 로그인한 참여자
+    const AUCTION_STATE_KEY  = "charityAuctionV1";    // 경매 물품 데이터
+
+    const DEFAULT_CATEGORIES = [
+      "생활용품",
+      "화장품/뷰티",
+      "의류/잡화",
+      "스포츠/레저",
+      "가전/디지털",
+      "식품"
+    ];
+
+    const $ = (s) => document.querySelector(s);
+
+    const adminLoginBtn  = $("#adminLoginBtn");
+    const adminPwInput   = $("#adminPw");
+    const statusEl       = $("#status");
+    const loginCard      = $("#loginCard");
+    const adminCard      = $("#adminCard");
+
+    const tabButtons     = document.querySelectorAll(".tab-btn");
+    const tabOverview    = $("#tab-overview");
+    const tabUsers       = $("#tab-users");
+    const tabLots        = $("#tab-lots");
+
+    const userTableBody  = $("#userTableBody");
+    const reloadUsersBtn = $("#reloadUsersBtn");
+
+    const auctionGroupsEl = $("#auctionGroups");
+    const newLotBtn       = $("#newLotBtn");
+    const newLotMenu      = $("#newLotMenu");
+
+    // ===== 참여자/가입자 =====
+    function loadCurrentParticipant() {
+      const raw = localStorage.getItem(CURRENT_USER_KEY);
+      if (!raw) return null;
+      try { return JSON.parse(raw); } catch { return null; }
+    }
+
+    function loadUsersList() {
+      const raw = localStorage.getItem(USERS_LIST_KEY);
+      if (!raw) return [];
+      try { return JSON.parse(raw) || []; } catch { return []; }
+    }
+
+    // ===== 경매 상태 로드/저장 =====
+    function loadAuctionState() {
+      const raw = localStorage.getItem(AUCTION_STATE_KEY);
+      if (!raw) {
+        return { lots: [], currentLotIdx: 0, isAdmin: true };
+      }
+      try {
+        const st = JSON.parse(raw) || {};
+        if (!Array.isArray(st.lots)) st.lots = [];
+        if (typeof st.currentLotIdx !== "number") st.currentLotIdx = 0;
+        if (typeof st.isAdmin !== "boolean") st.isAdmin = true;
+        return st;
+      } catch {
+        return { lots: [], currentLotIdx: 0, isAdmin: true };
+      }
+    }
+
+    function saveAuctionState(state) {
+      localStorage.setItem(AUCTION_STATE_KEY, JSON.stringify(state));
+    }
+
+    function ensureAuctionState() {
+      const st = loadAuctionState();
+      return st || { lots: [], currentLotIdx: 0, isAdmin: true };
+    }
+
+    // LOT 그룹핑
+    function groupLotsByCategory(lots) {
+      const groups = {};
+      lots.forEach((lot) => {
+        const raw = (lot.category || "").trim();
+        const cat = raw || "기타";
+        if (!groups[cat]) groups[cat] = [];
+        groups[cat].push(lot);
+      });
+      return groups;
+    }
+
+    // LOT 페이지로 이동 (수정용)
+    function openLotInAuction(lotId) {
+      if (!lotId) return;
+      let state = ensureAuctionState();
+      const idx = state.lots.findIndex(
+        (l) => (l.id || "").toUpperCase() === String(lotId).toUpperCase()
+      );
+      if (idx >= 0) {
+        state.currentLotIdx = idx;
+      }
+      state.isAdmin = true; // 관리자 모드 ON
+      saveAuctionState(state);
+      window.location.href = "charity_auction.html?lot=" + encodeURIComponent(lotId);
+    }
+
+    // LOT 삭제
+    function deleteLotById(lotId) {
+      let state = ensureAuctionState();
+      const idx = state.lots.findIndex(
+        (l) => (l.id || "").toUpperCase() === String(lotId).toUpperCase()
+      );
+      if (idx < 0) return;
+
+      const lot = state.lots[idx];
+      const title = lot.title || "(제목 없음)";
+
+      if (!confirm(`'${title}' 물품을 삭제하시겠습니까?\n(관련 댓글/입찰 내역도 함께 사라집니다)`)) {
+        return;
+      }
+
+      state.lots.splice(idx, 1);
+      if (state.currentLotIdx >= state.lots.length) {
+        state.currentLotIdx = Math.max(0, state.lots.length - 1);
+      }
+      saveAuctionState(state);
+      renderAuctionGroups();
+    }
+
+    // LOT 생성
+    function createNewLot(category) {
+      let state = ensureAuctionState();
+
+      const baseId = (window.crypto && crypto.randomUUID)
+        ? crypto.randomUUID()
+        : String(Date.now());
+      const id = baseId.slice(0, 8).toUpperCase();
+
+      const newLot = {
+        id,
+        title: "",
+        refPrice: null,
+        category: category || "",
+        color: "",
+        size: "",
+        gender: "",
+        condition: "",
+        notes: "",
+        startPrice: 0,
+        tick: 1000,
+        currentBid: 0,
+        imageData: "",
+        comments: []
+      };
+
+      if (!Array.isArray(state.lots)) state.lots = [];
+      state.lots.push(newLot);
+      state.currentLotIdx = state.lots.length - 1;
+      state.isAdmin = true;
+      saveAuctionState(state);
+
+      // 생성 후 바로 해당 LOT 수정 페이지로 이동
+      window.location.href = "charity_auction.html?lot=" + encodeURIComponent(id);
+    }
+
+    // LOT 리스트 렌더링
+    function renderAuctionGroups() {
+      if (!auctionGroupsEl) return;
+
+      auctionGroupsEl.innerHTML = "";
+
+      const state = loadAuctionState();
+      const lots  = state && Array.isArray(state.lots) ? state.lots : [];
+
+      if (!lots.length) {
+        const empty = document.createElement("div");
+        empty.className = "hint";
+        empty.innerHTML =
+          '등록된 경매 물품이 없습니다. 상단의 <b>새로 만들기</b> 버튼이나 각 그룹의 <b>+ 새 물품</b>을 눌러 첫 물품을 생성해 주세요.';
+        auctionGroupsEl.appendChild(empty);
+        return;
+      }
+
+      const groups = groupLotsByCategory(lots);
+      const others = Object.keys(groups).filter(
+        (c) => !DEFAULT_CATEGORIES.includes(c)
+      );
+      const orderedCats = [...DEFAULT_CATEGORIES, ...others];
+
+      orderedCats.forEach((cat) => {
+        const items = groups[cat] || [];
+        const section = document.createElement("section");
+        section.className = "auction-group";
+
+        const header = document.createElement("div");
+        header.className = "auction-group-header";
+
+        const titleSpan = document.createElement("span");
+        titleSpan.textContent = cat;
+        const countSpan = document.createElement("span");
+        countSpan.className = "count";
+        countSpan.textContent = items.length.toString();
+
+        header.appendChild(titleSpan);
+        header.appendChild(countSpan);
+        section.appendChild(header);
+
+        const body = document.createElement("div");
+        body.className = "auction-group-body";
+
+        items.forEach((lot) => {
+          const row = document.createElement("div");
+          row.className = "auction-item-row";
+
+          const mainBtn = document.createElement("button");
+          mainBtn.type = "button";
+          mainBtn.className = "auction-item-main";
+          mainBtn.textContent = lot.title || "(제목 없음)";
+          mainBtn.addEventListener("click", () => openLotInAuction(lot.id));
+
+          const delBtn = document.createElement("button");
+          delBtn.type = "button";
+          delBtn.className = "auction-item-delete";
+          delBtn.textContent = "삭제";
+          delBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            deleteLotById(lot.id);
+          });
+
+          row.appendChild(mainBtn);
+          row.appendChild(delBtn);
+          body.appendChild(row);
+        });
+
+        const addBtn = document.createElement("button");
+        addBtn.type = "button";
+        addBtn.className = "auction-add-item";
+        addBtn.textContent = "+ 새 물품";
+        addBtn.addEventListener("click", () => createNewLot(cat));
+        body.appendChild(addBtn);
+
+        section.appendChild(body);
+        auctionGroupsEl.appendChild(section);
+      });
+    }
+
+    // ===== 탭 전환 =====
+    function switchTab(tabName) {
+      tabButtons.forEach((btn) => {
+        const isActive = btn.dataset.tab === tabName;
+        btn.classList.toggle("active", isActive);
+      });
+
+      if (tabName === "overview") {
+        tabOverview.style.display = "block";
+        tabUsers.style.display    = "none";
+        if (tabLots) tabLots.style.display = "none";
+      } else if (tabName === "users") {
+        tabOverview.style.display = "none";
+        tabUsers.style.display    = "block";
+        if (tabLots) tabLots.style.display = "none";
+        loadUsers();
+      } else if (tabName === "lots") {
+        tabOverview.style.display = "none";
+        tabUsers.style.display    = "none";
+        if (tabLots) tabLots.style.display = "block";
+        renderAuctionGroups();
+      }
+    }
+
+    tabButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const tabName = btn.dataset.tab;
+        switchTab(tabName);
+      });
+    });
+
+    // ===== 가입자 목록 =====
+    function loadUsers() {
+      const list        = loadUsersList();
+      const currentUser = loadCurrentParticipant();
+
+      userTableBody.innerHTML = "";
+
+      if (!list || list.length === 0) {
+        const tr = document.createElement("tr");
+        const td = document.createElement("td");
+        td.colSpan   = 6;
+        td.textContent = "현재 저장된 가입 정보가 없습니다.";
+        td.className = "empty";
+        tr.appendChild(td);
+        userTableBody.appendChild(tr);
+        return;
+      }
+
+      list.sort((a, b) => {
+        const aTime = a.joinedAt || "";
+        const bTime = b.joinedAt || "";
+        return aTime.localeCompare(bTime);
+      });
+
+      list.forEach((u, idx) => {
+        const tr = document.createElement("tr");
+
+        const tdIndex = document.createElement("td");
+        tdIndex.textContent = String(idx + 1);
+
+        const tdEmail = document.createElement("td");
+        tdEmail.textContent = u.email || "-";
+
+        const tdNickname = document.createElement("td");
+        tdNickname.textContent = u.nickname || "-";
+
+        const tdRole = document.createElement("td");
+        tdRole.textContent = u.role || "-";
+
+        const tdPassword = document.createElement("td");
+        let password = u.password;
+
+        if ((!password || password === "-") &&
+            currentUser &&
+            currentUser.email === u.email &&
+            currentUser.password) {
+          password = currentUser.password;
+        }
+        tdPassword.textContent = password ? password : "-";
+
+        const tdJoined = document.createElement("td");
+        if (u.joinedAt) {
+          const d = new Date(u.joinedAt);
+          if (!isNaN(d.getTime())) {
+            tdJoined.textContent = d.toLocaleString("ko-KR");
+          } else {
+            tdJoined.textContent = u.joinedAt;
+          }
+        } else {
+          tdJoined.textContent = "-";
+        }
+
+        tr.appendChild(tdIndex);
+        tr.appendChild(tdEmail);
+        tr.appendChild(tdNickname);
+        tr.appendChild(tdRole);
+        tr.appendChild(tdPassword);
+        tr.appendChild(tdJoined);
+
+        userTableBody.appendChild(tr);
+      });
+    }
+
+    if (reloadUsersBtn) {
+      reloadUsersBtn.addEventListener("click", () => {
+        loadUsers();
+      });
+    }
+
+    // ===== 새로 만들기 드롭다운 =====
+    if (newLotBtn && newLotMenu) {
+      newLotBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        newLotMenu.classList.toggle("hidden");
+      });
+
+      newLotMenu.addEventListener("click", (e) => {
+        const btn = e.target.closest("button");
+        if (!btn) return;
+
+        const cat = btn.dataset.cat;
+        const action = btn.dataset.action;
+
+        newLotMenu.classList.add("hidden");
+
+        if (action === "newGroup") {
+          const name = prompt("새 그룹(카테고리) 이름을 입력해 주세요:");
+          if (name && name.trim()) {
+            createNewLot(name.trim());
+          }
+        } else if (cat) {
+          createNewLot(cat);
+        }
+      });
+
+      document.addEventListener("click", (e) => {
+        if (!newLotBtn.contains(e.target) && !newLotMenu.contains(e.target)) {
+          newLotMenu.classList.add("hidden");
+        }
+      });
+    }
+
+    // ===== 관리자 로그인 =====
+    adminLoginBtn.addEventListener("click", () => {
+      const pw = adminPwInput.value.trim();
+      if (!pw) {
+        statusEl.textContent = "비밀번호를 입력해 주세요.";
+        statusEl.className   = "status status-error";
+        return;
+      }
+      if (pw !== ADMIN_PASSWORD) {
+        statusEl.textContent = "비밀번호가 일치하지 않습니다.";
+        statusEl.className   = "status status-error";
+        return;
+      }
+      statusEl.textContent = "로그인에 성공했습니다.";
+      statusEl.className   = "status status-ok";
+
+      setTimeout(() => {
+        loginCard.style.display = "none";
+        adminCard.style.display = "block";
+        switchTab("overview");
+      }, 400);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,817 @@
+<html lang="ko"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hansae Charity Auction – 참여자 로그인</title>
+  <style>
+    :root {
+      --blue: #3182f6;
+      --blue-soft: #e8f2ff;
+      --bg: #f5f7fb;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --card: #ffffff;
+      --danger: #ef4444;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: radial-gradient(circle at top, #eef3ff 0, #f5f7fb 40%, #edf2ff 100%);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont,
+        "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .app { flex: 1; display: flex; flex-direction: column; }
+    .topbar {
+      position: sticky; top: 0; z-index: 10;
+      background: rgba(245, 247, 251, 0.9);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(229, 231, 235, 0.8);
+    }
+    .topbar-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand-logo {
+      width: 32px; height: 32px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #3182f6, #4f46e5);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-weight: 800; font-size: 17px;
+    }
+    .brand-text-main { font-weight: 700; font-size: 16px; }
+    .brand-text-sub { font-size: 11px; color: var(--muted); }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .pill {
+      background: #eff4ff;
+      color: #1d4ed8;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .nickname-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .btn-logout {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px 16px 32px;
+    }
+    .card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--card);
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
+      padding: 24px 22px 20px;
+    }
+    .card-header { margin-bottom: 14px; }
+    .card-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+    .card-subtitle { font-size: 12px; color: var(--muted); line-height: 1.5; }
+    .badge-soft {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 8px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      background: var(--blue-soft);
+      color: #1d4ed8;
+    }
+    form {
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    label {
+      font-size: 12px;
+      font-weight: 500;
+      margin-bottom: 2px;
+      display: block;
+    }
+    input[type="email"],
+    input[type="password"],
+    input[type="text"] {
+      width: 100%;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      padding: 9px 12px;
+      font-size: 13px;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+    }
+    input::placeholder { color: #9ca3af; }
+    input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 1px rgba(49, 130, 246, 0.1);
+      background: #ffffff;
+    }
+    .input-group { margin-bottom: 2px; }
+    .hint { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .btn {
+      border-radius: 999px;
+      border: none;
+      padding: 9px 14px;
+      font-size: 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-decoration: none;
+      transition: transform 0.08s ease, box-shadow 0.1s ease, background 0.12s ease;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: var(--blue);
+      color: #ffffff;
+      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
+      font-weight: 600;
+      width: 100%;
+      margin-top: 2px;
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+    }
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      font-size: 11px;
+      padding: 4px 8px;
+      box-shadow: none;
+    }
+    .btn-ghost:hover { text-decoration: underline; }
+    .footer-row {
+      margin-top: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .status { font-size: 11px; margin-top: 4px; min-height: 14px; }
+    .status-ok { color: #16a34a; }
+    .status-error { color: var(--danger); }
+    footer {
+      border-top: 1px solid #e5e7eb;
+      background: #f9fafb;
+      padding: 10px 20px 14px 20px;
+      font-size: 11px;
+      color: #9ca3af;
+      margin-top: auto;
+    }
+    footer .inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    /* 로그인 유지 상태 전용 영역 */
+    #loggedInView {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 12px;
+    }
+  </style>
+
+  <!-- EmailJS SDK (사용 시에만 설정) -->
+  <script src="https://cdn.emailjs.com/sdk/3.11.0/email.min.js"></script>
+  <script>
+    // TODO: EmailJS Public Key로 교체 (사용하지 않을 경우 그냥 두면 됨)
+    (function () {
+      if (window.emailjs) {
+        emailjs.init("YOUR_PUBLIC_KEY");
+      }
+    })();
+  </script>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-logo">H</div>
+        <div>
+          <div class="brand-text-main">Hansae Charity Auction</div>
+          <div class="brand-text-sub">참여자 전용 로그인 페이지</div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <!-- ✅ 로그인 + 닉네임 설정 완료 시에만 보이는 영역 -->
+        <span class="nickname-pill" id="nicknameDisplay" style="display: inline-flex;">큰손 님</span>
+        <button type="button" class="btn-ghost btn-logout" id="logoutBtn" style="display: inline-flex;">
+          로그아웃
+        </button>
+        <span class="pill" id="participantBadge">Participant · v1.0</span>
+      </div>
+    </div>
+  </div>
+
+  <main class="main">
+    <div class="card">
+      <div class="card-header">
+        <div id="modeTitle" class="card-title">이미 로그인되어 있습니다</div>
+        <div id="modeSubtitle" class="card-subtitle">이 브라우저에서는 이미 로그인 상태입니다.<br>아래 버튼을 눌러 경매 페이지로 이동해 주세요.</div>
+      </div>
+
+      <!-- ✅ 1단계: 이메일/비밀번호 등록 + 로그인 -->
+      <form id="authForm" style="display: none;">
+        <div class="input-group">
+          <label for="emailInput">이메일</label>
+          <input type="email" id="emailInput" placeholder="예: name@hansae.co.kr" autocomplete="email" required="">
+          <div class="hint" id="emailHint">
+            사내 사용 목적이므로 회사 메일 계정만 사용 가능합니다.
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="passwordInput" id="passwordLabel">비밀번호 설정</label>
+          <input type="password" id="passwordInput" placeholder="6자 이상 입력해 주세요." autocomplete="new-password" required="">
+          <div class="hint" id="passwordHint">
+            브라우저에만 저장되며, 최소 6자 이상을 권장드립니다.
+          </div>
+        </div>
+
+        <div class="input-group" id="passwordConfirmGroup">
+          <label for="passwordConfirmInput">비밀번호 확인</label>
+          <input type="password" id="passwordConfirmInput" placeholder="비밀번호를 한 번 더 입력해 주세요." autocomplete="new-password">
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="submitBtn">
+          등록 후 경매 페이지로 이동
+        </button>
+
+        <div class="footer-row">
+          <span id="modeToggleText">
+            이미 등록하셨나요?
+          </span>
+          <button type="button" class="btn btn-ghost" id="modeToggleBtn">
+            로그인 화면으로 전환
+          </button>
+        </div>
+
+        <div class="footer-row">
+          <span>테스트를 다시 시작하고 싶으신가요?</span>
+          <button type="button" class="btn btn-ghost" id="resetBtn">
+            저장된 이메일/비밀번호 삭제
+          </button>
+        </div>
+
+        <div id="status" class="status status-ok"></div>
+      </form>
+
+      <!-- ✅ 2단계: 닉네임 설정 폼 (최초 가입 직후 / 닉네임 없는 계정 로그인 시) -->
+      <form id="nicknameForm" style="display:none;">
+        <div class="input-group">
+          <label for="nicknameInput">닉네임</label>
+          <input type="text" id="nicknameInput" placeholder="경매에서 사용할 닉네임을 입력해 주세요." required="">
+          <div class="hint">
+            실명 또는 별칭 모두 가능하며, 경매 화면에 이 닉네임이 표시됩니다.
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+          닉네임 저장 후 경매 페이지로 이동
+        </button>
+
+        <div id="nicknameStatus" class="status status-ok"></div>
+      </form>
+
+      <!-- ✅ 3단계: 이미 로그인된 상태에서 다시 들어온 경우 -->
+      <div id="loggedInView" style="display: flex;">
+        <div class="card-subtitle">
+          <strong id="loggedInNickname">큰손</strong>님, 이미 로그인되어 있습니다.<br>
+          아래 버튼을 눌러 바로 경매 페이지로 이동하실 수 있습니다.
+        </div>
+        <div class="hint">
+          저장된 이메일: <span id="loggedInEmail">jrkwak@hansae.com</span><br>
+          로그아웃을 원하시면 우측 상단의 <strong>로그아웃</strong> 버튼을 눌러주세요.
+        </div>
+        <button type="button" class="btn btn-primary" id="goCatalogBtn">
+          경매 페이지로 이동
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="inner">
+      <span>© 2025 Hansae Charity Auction (Internal Prototype)</span>
+      <span>로그인 정보는 이 브라우저의 LocalStorage에만 저장됩니다.</span>
+    </div>
+  </footer>
+</div>
+
+<script>
+  // ✅ 참가자 정보 저장 키
+  const USER_KEY = "charityAuctionUser";
+  // ✅ 가입자 리스트(관리자용) 저장 키 – admin.html과 동일하게 맞춤
+  const USERS_LIST_KEY = "charityAuctionUsers";
+  // ✅ 경매 카탈로그 페이지 (첨부 catalog.html 기준)
+  const CATALOG_URL = "catalog.html";
+
+  // (선택) 관리자에게 신규 가입 알림을 보낼 때 사용할 EmailJS 설정
+  const EMAILJS_SERVICE_ID = "YOUR_SERVICE_ID";
+  const EMAILJS_TEMPLATE_ID = "YOUR_TEMPLATE_ID";
+  // 템플릿 안에서 관리자의 수신 메일 주소를 고정해 두는 방식 추천
+
+  const $ = (s) => document.querySelector(s);
+
+  function loadUser() {
+    const raw = localStorage.getItem(USER_KEY);
+    if (!raw) return null;
+    try { return JSON.parse(raw); } catch { return null; }
+  }
+
+  function saveUser(user) {
+    localStorage.setItem(USER_KEY, JSON.stringify(user));
+  }
+
+  function clearUser() {
+    localStorage.removeItem(USER_KEY);
+  }
+
+  // ✅ 헤더 우측 닉네임/로그아웃 영역 렌더링
+  function renderHeaderUserState(user) {
+    const nicknameEl = document.getElementById("nicknameDisplay");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    if (!nicknameEl || !logoutBtn) return;
+
+    if (user && user.nickname && user.isLoggedIn) {
+      nicknameEl.textContent = user.nickname + " 님";
+      nicknameEl.style.display = "inline-flex";
+      logoutBtn.style.display = "inline-flex";
+    } else {
+      nicknameEl.textContent = "";
+      nicknameEl.style.display = "none";
+      logoutBtn.style.display = "none";
+    }
+  }
+
+  // ✅ 관리자용 가입자 리스트에 정보 upsert (닉네임 포함)
+  function upsertUserToList({ email, nickname, role }) {
+    if (!email) return;
+    const raw = localStorage.getItem(USERS_LIST_KEY);
+    let list = [];
+    try {
+      list = raw ? JSON.parse(raw) : [];
+    } catch {
+      list = [];
+    }
+
+    const now = new Date().toISOString();
+    const idx = list.findIndex(u => u.email === email);
+
+    if (idx === -1) {
+      // 새 가입자
+      list.push({
+        email,
+        nickname: nickname || "",
+        role: role || "participant",
+        joinedAt: now
+      });
+    } else {
+      // 기존 가입자 정보 업데이트 (joinedAt은 유지)
+      const prev = list[idx];
+      list[idx] = {
+        ...prev,
+        nickname: (nickname !== undefined) ? nickname : (prev.nickname || ""),
+        role: role || prev.role || "participant",
+        joinedAt: prev.joinedAt || now
+      };
+    }
+
+    localStorage.setItem(USERS_LIST_KEY, JSON.stringify(list));
+  }
+
+  // ✅ admin.html과 동일한 가입자 목록 로딩 함수
+  function loadUsersList() {
+    const raw = localStorage.getItem(USERS_LIST_KEY);
+    if (!raw) return [];
+    try {
+      return JSON.parse(raw) || [];
+    } catch {
+      return [];
+    }
+  }
+
+  // ✅ 이메일 중복 여부 확인 (대소문자 무시)
+  function isEmailTaken(email) {
+    const list = loadUsersList();
+    const target = email.trim().toLowerCase();
+    return list.some(u => (u.email || "").toLowerCase() === target);
+  }
+
+  // ✅ 닉네임 중복 여부 확인
+  function isNicknameTaken(nickname) {
+    const list = loadUsersList();
+    const target = nickname.trim();
+    return list.some(u => (u.nickname || "") === target);
+  }
+
+  function setStatus(msg, type = "ok") {
+    const el = $("#status");
+    if (!el) return;
+    el.textContent = msg || "";
+    el.className = "status " + (type === "error" ? "status-error" : "status-ok");
+  }
+
+  // 닉네임 단계용 상태 표시
+  function setNicknameStatus(msg, type = "ok") {
+    const el = $("#nicknameStatus");
+    if (!el) return;
+    el.textContent = msg || "";
+    el.className = "status " + (type === "error" ? "status-error" : "status-ok");
+  }
+
+  function isValidEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  }
+
+  // ✅ 공통 redirect 함수
+  function redirectToCatalog() {
+    window.location.href = CATALOG_URL;
+  }
+
+  // ✅ 최초 가입 시 관리자에게 이메일 전송 (미설정 시 바로 resolve)
+  function sendRegistrationEmailToAdmin(email, password) {
+    // EmailJS를 사용하지 않거나 아직 세팅 전이면 아무 작업 없이 성공 처리
+    if (
+      !window.emailjs ||
+      !EMAILJS_SERVICE_ID ||
+      !EMAILJS_TEMPLATE_ID ||
+      EMAILJS_SERVICE_ID === "YOUR_SERVICE_ID" ||
+      EMAILJS_TEMPLATE_ID === "YOUR_TEMPLATE_ID"
+    ) {
+      return Promise.resolve(); // 바로 성공으로 간주
+    }
+
+    const templateParams = {
+      user_email: email,
+      user_password: password,
+      message: `새로운 참여자 가입: ${email} / 비밀번호: ${password}`,
+    };
+
+    return emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams);
+  }
+
+  // ✅ 닉네임 설정 화면으로 전환
+  function showNicknameStep() {
+    const authForm = $("#authForm");
+    const nicknameForm = $("#nicknameForm");
+    const modeTitle = $("#modeTitle");
+    const modeSubtitle = $("#modeSubtitle");
+    const nicknameInput = $("#nicknameInput");
+
+    if (authForm) authForm.style.display = "none";
+    if (nicknameForm) nicknameForm.style.display = "flex";
+
+    const stored = loadUser();
+    const email = stored?.email || "";
+
+    modeTitle.textContent = "닉네임 설정";
+    modeSubtitle.innerHTML =
+      (email ? `<strong>${email}</strong> 계정으로 로그인되었습니다.<br />` : "") +
+      "경매에서 표시될 닉네임을 설정해 주세요.";
+
+    nicknameInput.value = stored?.nickname || "";
+    setNicknameStatus(""); // 상태 초기화
+  }
+
+  function initAuthPage() {
+    const user = loadUser(); // 현재 저장된 사용자 정보
+    renderHeaderUserState(user); // 헤더 상태 먼저 반영
+
+    const emailInput = $("#emailInput");
+    const passwordInput = $("#passwordInput");
+    const passwordConfirmInput = $("#passwordConfirmInput");
+    const passwordConfirmGroup = $("#passwordConfirmGroup");
+    const authForm = $("#authForm");
+    const modeToggleBtn = $("#modeToggleBtn");
+    const modeToggleText = $("#modeToggleText");
+    const resetBtn = $("#resetBtn");
+    const modeTitle = $("#modeTitle");
+    const modeSubtitle = $("#modeSubtitle");
+    const passwordLabel = $("#passwordLabel");
+    const passwordHint = $("#passwordHint");
+    const emailHint = $("#emailHint");
+    const submitBtn = $("#submitBtn");
+
+    const nicknameForm = $("#nicknameForm");
+    const nicknameInput = $("#nicknameInput");
+
+    const loggedInView = $("#loggedInView");
+    const loggedInNickname = $("#loggedInNickname");
+    const loggedInEmail = $("#loggedInEmail");
+    const goCatalogBtn = $("#goCatalogBtn");
+
+    // ✅ 이미 로그인(닉네임 포함)된 상태라면 로그인/닉네임 폼 숨기고 유지 화면만 보여줌
+    if (user && user.isLoggedIn && user.nickname) {
+      if (authForm) authForm.style.display = "none";
+      if (nicknameForm) nicknameForm.style.display = "none";
+      if (loggedInView) {
+        loggedInView.style.display = "flex";
+      }
+      if (loggedInNickname) loggedInNickname.textContent = user.nickname;
+      if (loggedInEmail) loggedInEmail.textContent = user.email || "";
+
+      modeTitle.textContent = "이미 로그인되어 있습니다";
+      modeSubtitle.innerHTML =
+        "이 브라우저에서는 이미 로그인 상태입니다.<br />아래 버튼을 눌러 경매 페이지로 이동해 주세요.";
+
+      if (goCatalogBtn) {
+        goCatalogBtn.onclick = redirectToCatalog;
+      }
+
+      setStatus("");
+      setNicknameStatus("");
+      return;
+    }
+
+    // user가 있으면 로그인 모드, 없으면 회원가입 모드
+    let mode = user ? "login" : "register";
+
+    function renderMode() {
+      if (mode === "register") {
+        modeTitle.textContent = "이메일 등록 후 시작하기";
+        modeSubtitle.innerHTML =
+          "회사 이메일과 비밀번호를 한 번만 설정하면,<br />같은 브라우저에서는 바로 경매 페이지로 이동할 수 있습니다.";
+        passwordLabel.textContent = "비밀번호 설정";
+        passwordHint.textContent = "브라우저에만 저장되며, 최소 6자 이상을 권장드립니다.";
+        submitBtn.textContent = "등록 후 경매 페이지로 이동";
+        modeToggleText.textContent = "이미 등록하셨나요?";
+        modeToggleBtn.textContent = "로그인 화면으로 전환";
+        passwordConfirmGroup.style.display = "block";
+        emailInput.readOnly = false;
+        emailInput.style.backgroundColor = "#ffffff";
+        emailInput.value = user?.email || "";
+        emailHint.textContent = "사내 사용 목적이므로 회사 메일 사용을 권장드립니다.";
+        setStatus("");
+      } else {
+        modeTitle.textContent = "로그인 후 경매 페이지로 이동";
+        modeSubtitle.innerHTML =
+          "이미 이 브라우저에서 이메일을 등록하셨다면,<br />비밀번호만 입력하고 바로 경매 페이지로 이동할 수 있습니다.";
+        passwordLabel.textContent = "비밀번호";
+        passwordHint.textContent = "등록하셨던 비밀번호를 입력해 주세요.";
+        submitBtn.textContent = "로그인 후 경매 페이지로 이동";
+        modeToggleText.textContent = "처음 이용하시는 경우";
+        modeToggleBtn.textContent = "이메일 등록 화면으로 전환";
+        passwordConfirmGroup.style.display = "none";
+
+        if (user && user.email) {
+          emailInput.value = user.email;
+          emailInput.readOnly = true;
+          emailInput.style.backgroundColor = "#f9fafb";
+          emailHint.textContent = "이미 등록된 이메일입니다. 비밀번호만 입력해 주세요.";
+        } else {
+          emailInput.readOnly = false;
+          emailInput.style.backgroundColor = "#ffffff";
+          emailHint.textContent = "처음 이용 시, 이메일을 등록해 주세요.";
+        }
+        setStatus("");
+      }
+      passwordInput.value = "";
+      passwordConfirmInput.value = "";
+      // 닉네임 폼/로그인 유지 화면 숨김
+      if (authForm) authForm.style.display = "flex";
+      if (nicknameForm) nicknameForm.style.display = "none";
+      if (loggedInView) loggedInView.style.display = "none";
+      setNicknameStatus("");
+    }
+
+    // ✅ 이메일/비밀번호 등록 & 로그인 처리
+    authForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const email = emailInput.value.trim();
+      const password = passwordInput.value.trim();
+      const confirm = passwordConfirmInput.value.trim();
+
+      if (!isValidEmail(email)) {
+        setStatus("올바른 이메일 형식을 입력해 주세요.", "error");
+        emailInput.focus();
+        return;
+      }
+
+      if (!password || password.length < 6) {
+        setStatus("비밀번호는 최소 6자 이상 입력해 주세요.", "error");
+        passwordInput.focus();
+        return;
+      }
+
+      if (mode === "register") {
+        if (!confirm) {
+          setStatus("비밀번호 확인을 입력해 주세요.", "error");
+          passwordConfirmInput.focus();
+          return;
+        }
+        if (password !== confirm) {
+          setStatus("비밀번호와 비밀번호 확인이 일치하지 않습니다.", "error");
+          passwordConfirmInput.focus();
+          return;
+        }
+
+        // 🔁 이메일 중복 체크 (admin.html에 등록된 값 포함)
+        if (isEmailTaken(email)) {
+          setStatus("이미 사용 중인 이메일입니다. 다른 이메일을 입력해 주세요.", "error");
+          emailInput.focus();
+          return;
+        }
+
+        // 1) 로컬에 저장 (닉네임은 아직 없음, 로그인 상태 true)
+        saveUser({ email, password, isLoggedIn: true });
+
+        // 2) 관리자용 가입자 리스트에 기본 정보 저장 (닉네임은 아직 없음)
+        upsertUserToList({ email, role: "participant" });
+
+        // 3) EmailJS로 관리자 알림 (설정 안 되어 있으면 바로 성공 처리)
+        sendRegistrationEmailToAdmin(email, password)
+          .catch((err) => {
+            console.error("EmailJS error:", err);
+          })
+          .finally(() => {
+            // ✅ 최초 가입 직후 닉네임 설정 화면으로 이동
+            showNicknameStep();
+          });
+      } else {
+        const stored = loadUser();
+        if (!stored || !stored.email || !stored.password) {
+          setStatus("저장된 사용자 정보가 없습니다. 먼저 이메일을 등록해 주세요.", "error");
+          mode = "register";
+          renderMode();
+          return;
+        }
+        if (email !== stored.email) {
+          setStatus("저장된 이메일과 일치하지 않습니다.", "error");
+          return;
+        }
+        if (password !== stored.password) {
+          setStatus("비밀번호가 일치하지 않습니다.", "error");
+          passwordInput.focus();
+          return;
+        }
+
+        // ✅ 로그인 성공: 로그인 상태 true 저장
+        stored.isLoggedIn = true;
+        saveUser(stored);
+
+        // ✅ 로그인 시에도 가입자 리스트에 존재하도록 upsert (기존 데이터 보존)
+        upsertUserToList({
+          email: stored.email,
+          nickname: stored.nickname,
+          role: "participant"
+        });
+
+        // ✅ 기존 사용자이지만 닉네임이 없으면 닉네임 설정부터
+        if (!stored.nickname) {
+          showNicknameStep();
+          return;
+        }
+
+        // 헤더 닉네임도 표시
+        renderHeaderUserState(stored);
+
+        setStatus("로그인에 성공했습니다. 경매 페이지로 이동합니다.", "ok");
+        setTimeout(() => {
+          redirectToCatalog();
+        }, 300);
+      }
+    });
+
+    // ✅ 닉네임 설정 폼 처리
+    nicknameForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const nickname = nicknameInput.value.trim();
+
+      if (!nickname) {
+        setNicknameStatus("닉네임을 입력해 주세요.", "error");
+        nicknameInput.focus();
+        return;
+      }
+
+      // 🔁 닉네임 중복 체크 (admin.html에 등록된 값 포함)
+      if (isNicknameTaken(nickname)) {
+        setNicknameStatus("이미 사용 중인 닉네임입니다. 다른 닉네임을 입력해 주세요.", "error");
+        nicknameInput.focus();
+        return;
+      }
+
+      const stored = loadUser();
+      if (!stored || !stored.email) {
+        setNicknameStatus("사용자 정보가 없습니다. 처음부터 다시 로그인해 주세요.", "error");
+        return;
+      }
+
+      stored.nickname = nickname;
+      stored.isLoggedIn = true; // 닉네임 설정 완료 후에도 로그인 상태 유지
+      saveUser(stored);
+
+      // ✅ 닉네임까지 포함하여 가입자 리스트 업데이트
+      upsertUserToList({
+        email: stored.email,
+        nickname,
+        role: "participant"
+      });
+
+      // 헤더 닉네임 표시
+      renderHeaderUserState(stored);
+
+      setNicknameStatus("닉네임이 저장되었습니다. 경매 페이지로 이동합니다.", "ok");
+      setTimeout(() => {
+        redirectToCatalog();
+      }, 400);
+    });
+
+    modeToggleBtn.addEventListener("click", () => {
+      mode = mode === "register" ? "login" : "register";
+      renderMode();
+    });
+
+    resetBtn.addEventListener("click", () => {
+      if (confirm("저장된 이메일/비밀번호를 모두 삭제하시겠습니까? (가입자 리스트는 그대로 유지됩니다)")) {
+        clearUser();
+        setStatus("저장된 로그인 정보가 초기화되었습니다.", "ok");
+        renderHeaderUserState(null);
+        mode = "register";
+        renderMode();
+      }
+    });
+
+    renderMode();
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    // 항상 이 페이지에서 시작
+    initAuthPage();
+
+    // ✅ 로그아웃 버튼 이벤트 (닉네임 표시 상태에서만 보임)
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", () => {
+        if (!confirm("로그아웃하시겠습니까?")) return;
+        const stored = loadUser();
+        if (stored) {
+          stored.isLoggedIn = false;   // 로그인 상태만 해제
+          saveUser(stored);
+        }
+        renderHeaderUserState(null);   // 헤더 닉네임/버튼 숨김
+        // 페이지 전체를 초기 상태로 새로고침 (participant.html 최초 화면)
+        window.location.reload();
+      });
+    }
+  });
+</script>
+
+
+</body></html>

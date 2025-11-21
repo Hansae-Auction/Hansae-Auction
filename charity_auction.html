@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hansae Charity Auction – 온라인 자선경매</title>
+  <style>
+    :root {
+      --blue: #3182f6;
+      --blue-soft: #e8f2ff;
+      --bg: #f5f7fb;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --card: #ffffff;
+      --danger: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: radial-gradient(circle at top, #eef3ff 0, #f5f7fb 40%, #edf2ff 100%);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont,
+        "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .app {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 상단 네비게이션 바 */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(245, 247, 251, 0.9);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(229, 231, 235, 0.8);
+    }
+
+    .topbar-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    .brand-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #3182f6, #4f46e5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 800;
+      font-size: 17px;
+    }
+
+    .brand-text-main {
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .brand-text-sub {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .pill {
+      background: #eff4ff;
+      color: #1d4ed8;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    /* 메인 레이아웃 */
+    .main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      padding: 24px 16px 32px;
+    }
+
+    .page-inner {
+      width: 100%;
+      max-width: 1080px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .card {
+      width: 100%;
+      background: var(--card);
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.06);
+      padding: 18px 18px 16px;
+    }
+
+    .card-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .card-subtitle {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .badge-soft {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--blue-soft);
+      border-radius: 999px;
+      padding: 4px 9px;
+      font-size: 11px;
+      color: #1d4ed8;
+    }
+
+    /* 버튼/폼 스타일 */
+    .btn {
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      padding: 8px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-decoration: none;
+      background: #ffffff;
+      color: var(--text);
+      transition: transform 0.08s ease, box-shadow 0.1s ease,
+        background 0.12s ease, border-color 0.12s ease;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      background: #f3f4ff;
+      border-color: #c7d2fe;
+      transform: translateY(-0.5px);
+      box-shadow: 0 4px 10px rgba(129, 140, 248, 0.15);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #3182f6, #4f46e5);
+      color: #ffffff;
+      border: none;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.28);
+      font-weight: 600;
+    }
+
+    .btn-danger {
+      background: #fef2f2;
+      border-color: #fecaca;
+      color: #b91c1c;
+    }
+
+    .btn-ghost {
+      background: #f9fafb;
+      border-style: dashed;
+    }
+
+    label {
+      font-size: 12px;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    textarea,
+    select {
+      background: #f9fafb;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 10px;
+      border-radius: 12px;
+      width: 100%;
+      font-size: 13px;
+      outline: none;
+    }
+
+    input[readonly] {
+      background: #f3f4f6;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 1px rgba(49, 130, 246, 0.12);
+      background: #ffffff;
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .flex {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .right {
+      margin-left: auto;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .pill-soft {
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      font-size: 11px;
+      color: #1e40af;
+    }
+
+    /* 레이아웃 그리드 */
+    .grid-main {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 14px;
+    }
+    .grid-main-vertical {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .nickname-display {
+      padding: 9px 12px;
+      border-radius: 999px;
+      background: #f3f4ff;
+      border: 1px dashed #cbd5f5;
+      font-size: 13px;
+      color: #1f2937;
+    }
+
+    @media (max-width: 900px) {
+      .grid-main {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* LOT 리스트 */
+    .lot-list {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 10px 0 4px;
+    }
+
+    .chip {
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #f9fafb;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .chip.active {
+      border-color: #4f46e5;
+      background: #eef2ff;
+      box-shadow: 0 0 0 1px rgba(79, 70, 229, 0.16);
+      font-weight: 600;
+    }
+
+    /* 이미지 패널 */
+    .imgwrap {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background: #eff4ff;
+      border: 1px dashed #c7d2fe;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .imgwrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    /* 물품 정보 패널 */
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .attrs {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 900px) {
+      .attrs {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    .price-main {
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .price-highlight {
+      font-size: 22px;
+      font-weight: 800;
+      color: #2563eb;
+    }
+
+    .lot-id-pill {
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      font-size: 11px;
+      color: #1e40af;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid #e5e7eb;
+      margin: 14px 0;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* 댓글/입찰 카드 */
+    .comment {
+      padding: 10px 12px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      margin-bottom: 8px;
+    }
+
+    .comment strong {
+      color: #111827;
+    }
+
+    .comment .meta {
+      font-size: 11px;
+      color: #9ca3af;
+    }
+
+    .rules {
+      font-size: 12px;
+      color: #4b5563;
+    }
+
+    .kbd {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+        monospace;
+      background: #f3f4ff;
+      border: 1px solid #e5e7eb;
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-size: 11px;
+    }
+
+    footer {
+      border-top: 1px solid #e5e7eb;
+      background: #f9fafb;
+      padding: 10px 20px 14px 20px;
+      font-size: 11px;
+      color: #9ca3af;
+      margin-top: auto;
+    }
+
+    footer .inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <!-- 상단 바 -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <a href="catalog.html" class="brand">
+        <div class="brand-logo">H</div>
+        <div>
+          <div class="brand-text-main">Hansae Charity Auction</div>
+          <div class="brand-text-sub">온라인 자선경매 (댓글 입찰)</div>
+        </div>
+      </a>
+      <div class="flex">
+        <span class="badge-soft">모드: <strong id="modeText">참가자</strong></span>
+        <button class="btn btn-ghost hidden" id="exportBtn" title="백업 JSON 내보내기 (관리자)">데이터 내보내기</button>
+        <label class="btn btn-ghost hidden">
+          데이터 가져오기
+          <input type="file" id="importFile" accept="application/json" hidden />
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- 메인 -->
+  <main class="main">
+    <div class="page-inner">
+      <!-- LOT 관리/선택 카드 (화면에서는 숨긴 상태 유지) -->
+      <div class="card hidden">
+        <div class="card-header-row">
+          <div>
+            <div class="card-title">경매 물품 관리</div>
+            <div class="card-subtitle">
+              여러 LOT을 등록한 뒤, 각 LOT 페이지에서 댓글로 입찰을 받습니다.
+            </div>
+          </div>
+          <div class="row">
+            <button class="btn btn-primary hidden" id="addLotBtn">새 물품 추가</button>
+          </div>
+        </div>
+
+        <div class="lot-list" id="lotList"></div>
+      </div>
+
+      <!-- 물품 상세 + 이미지 + 입찰/설정 -->
+      <div class="grid-main">
+        <!-- 좌측: 이미지 카드 -->
+        <div class="card">
+          <div class="card-header-row" style="margin-bottom:8px;">
+            <div class="card-title">이미지 미리보기</div>
+            <div class="muted">관리자 모드에서만 이미지 업로드/삭제 가능</div>
+          </div>
+          <div class="imgwrap" id="imgWrap">
+            <img id="lotImage" alt="상품 이미지 미리보기" />
+          </div>
+          <div id="adminImageControls" class="row hidden" style="margin-top:10px">
+            <label class="btn">
+              이미지 업로드
+              <input type="file" id="imageInput" accept="image/*" hidden />
+            </label>
+            <button class="btn btn-danger" id="removeImageBtn">이미지 제거</button>
+          </div>
+        </div>
+
+        <!-- 우측: 물품 정보 + 입찰 규칙 -->
+        <div class="card">
+          <div class="card-header-row">
+            <div>
+              <div class="card-title">물품 정보</div>
+              <div class="card-subtitle">
+                관리자 모드에서는 LOT 정보를 수정/삭제할 수 있습니다.
+              </div>
+            </div>
+            <div class="row">
+              <button class="btn hidden" id="editLotBtn">수정</button>
+              <button class="btn btn-danger hidden" id="deleteLotBtn">삭제</button>
+            </div>
+          </div>
+
+          <!-- 표시 영역 -->
+          <div id="viewArea">
+            <div class="meta-grid">
+              <div>
+                <div class="muted">제목</div>
+                <div id="v_title" style="font-size:18px;font-weight:800;"></div>
+              </div>
+              <div>
+                <div class="muted">Ref. Price</div>
+                <div id="v_refPrice"></div>
+              </div>
+            </div>
+
+            <div class="attrs">
+              <div>
+                <div class="muted">카테고리</div>
+                <div id="v_category"></div>
+              </div>
+              <div>
+                <div class="muted">색상</div>
+                <div id="v_color"></div>
+              </div>
+              <div>
+                <div class="muted">사이즈</div>
+                <div id="v_size"></div>
+              </div>
+              <div>
+                <div class="muted">성별</div>
+                <div id="v_gender"></div>
+              </div>
+              <div>
+                <div class="muted">상태</div>
+                <div id="v_condition"></div>
+              </div>
+              <div>
+                <div class="muted">비고</div>
+                <div id="v_notes"></div>
+              </div>
+            </div>
+
+            <hr />
+
+            <div class="row" style="align-items:baseline">
+              <div>
+                <div class="muted">경매 시작가</div>
+                <div class="price-main"><span id="v_startPrice">-</span> 원</div>
+              </div>
+              <div style="margin-left:24px">
+                <div class="muted">현재 최고가</div>
+                <div class="price-highlight"><span id="v_currentBid">-</span> 원</div>
+              </div>
+              <div class="right">
+                <span class="lot-id-pill" id="v_lotId"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 수정 폼 (관리자용) -->
+          <form id="editForm" class="hidden" autocomplete="off">
+            <div class="row">
+              <div style="flex:1; min-width:180px;">
+                <label>제목</label>
+                <input
+                  type="text"
+                  id="f_title"
+                  placeholder="예: BOUTIQUE MOSCHINO CARDIGAN (RED)"
+                  required
+                />
+              </div>
+              <div style="width:180px;">
+                <label>Ref. Price (USD)</label>
+                <input
+                  type="number"
+                  id="f_refPrice"
+                  step="1"
+                  min="0"
+                  placeholder="예: 560"
+                />
+              </div>
+            </div>
+
+            <div class="attrs">
+              <div>
+                <label>카테고리</label>
+                <input type="text" id="f_category" placeholder="CARDIGAN" />
+              </div>
+              <div>
+                <label>색상</label>
+                <input type="text" id="f_color" placeholder="RED" />
+              </div>
+              <div>
+                <label>사이즈</label>
+                <input type="text" id="f_size" placeholder="MEDIUM" />
+              </div>
+              <div>
+                <label>성별</label>
+                <input type="text" id="f_gender" placeholder="FEMALE" />
+              </div>
+              <div>
+                <label>상태</label>
+                <input type="text" id="f_condition" placeholder="중고" />
+              </div>
+              <div>
+                <label>비고</label>
+                <input type="text" id="f_notes" placeholder="추가 정보" />
+              </div>
+            </div>
+
+            <div class="row" style="margin-top:10px;">
+              <div style="width:180px;">
+                <label>시작가 (KRW)</label>
+                <input
+                  type="number"
+                  id="f_startPrice"
+                  step="1000"
+                  min="0"
+                  required
+                />
+              </div>
+              <div style="width:180px;">
+                <label>입찰단위 (KRW)</label>
+                <input
+                  type="number"
+                  id="f_tick"
+                  step="1000"
+                  min="1000"
+                  value="1000"
+                  required
+                />
+              </div>
+              <div class="right muted">
+                * 이미지 업로드는 좌측 패널 사용
+              </div>
+            </div>
+
+            <div class="row" style="margin-top:12px; justify-content:flex-end;">
+              <button type="button" class="btn" id="cancelEdit">취소</button>
+              <button type="submit" class="btn btn-primary">저장</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- 입찰/도움말 카드 -->
+      <div class="grid-main-vertical">
+        <div class="card">
+          <div class="card-title">입찰 (댓글) 영역</div>
+          <div class="rules" style="margin:6px 0 10px;">
+            1) 경매가는 <b>천원(₩1,000)</b> 단위로만 참여 가능합니다.<br />
+            2) 댓글에는 <b>숫자만</b> 적어 주세요.<br />
+            3) <b>닉네임</b>으로 입찰이 기록됩니다.<br />
+            규칙을 지키지 않은 댓글은 무효 처리될 수 있습니다.
+          </div>
+
+          <form id="bidForm" class="row" autocomplete="off">
+            <div style="width:200px; min-width:150px;">
+              <label>입찰가 (숫자만)</label>
+              <input
+                id="bidPrice"
+                type="number"
+                inputmode="numeric"
+                placeholder="예: 10000"
+                required
+              />
+            </div>
+            <div style="flex:1; min-width:180px;">
+              <label>닉네임</label>
+              <div id="bidderNicknameDisplay" class="nickname-display"></div>
+              <input id="bidder" type="hidden" />
+            </div>
+            <div style="width:150px; align-self:flex-end;">
+              <button class="btn btn-primary" type="submit">입찰 등록</button>
+            </div>
+          </form>
+
+          <hr />
+          <div id="comments"></div>
+          <div class="muted" style="margin-top:6px;">
+            ※ 개인정보 기재 시, 댓글 공개에 동의한 것으로 간주됩니다.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">도움말 & 설정</div>
+          <div class="card-subtitle" style="margin-top:6px;">
+            · <b>관리자</b>만 물품 추가/수정/삭제, 이미지 업로드, 데이터 백업/복원을 할 수 있습니다.<br />
+            · 참가자는 LOT 정보를 읽고, <b>댓글을 통해 입찰</b>만 할 수 있습니다.
+          </div>
+          <hr />
+          <div>
+            <div class="muted">현재 LOT</div>
+            <div class="row" style="margin-top:4px;">
+              <div id="currentLotTitle" style="font-weight:700;"></div>
+              <span class="pill-soft" id="currentLotId"></span>
+            </div>
+          </div>
+          <hr />
+          <div class="muted">
+            관리자 비밀키 변경은 코드 상단의 <span class="kbd">ADMIN_SECRET</span> 값을 수정해 주세요.
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="inner">
+      <span>© 2025 Hansae Charity Auction (Internal Prototype)</span>
+      <span>모든 데이터는 이 브라우저의 LocalStorage에 저장됩니다.</span>
+    </div>
+  </footer>
+</div>
+
+<script>
+  /***********************
+   * 기본 저장/상태
+   ***********************/
+  const USER_KEY = "charityAuctionUser";          // participant.html과 동일한 키
+  const PARTICIPANT_URL = "participant.html";     // 로그인 페이지
+
+  function loadCurrentUser() {
+    const raw = localStorage.getItem(USER_KEY);
+    if (!raw) return null;
+    try {
+      return JSON.parse(raw);
+    } catch {
+      return null;
+    }
+  }
+
+  const ADMIN_SECRET = "auction-2025-secret"; // <- 필요 시 변경
+  const $ = (sel) => document.querySelector(sel);
+  const fmt = (n) =>
+    n === null || n === undefined || n === ""
+      ? "-"
+      : n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  const nowStr = () => new Date().toLocaleString("ko-KR");
+
+  let currentUser = null;
+  let currentNickname = "";
+
+  // 참가자 닉네임을 입찰 영역에 반영
+  function applyUserToBidArea() {
+    const user = currentUser;
+    if (!user || !user.isLoggedIn || !user.nickname) return;
+
+    currentNickname = user.nickname;
+    const display = document.getElementById("bidderNicknameDisplay");
+    if (display) {
+      display.textContent = currentNickname + " 님";
+    }
+    const hiddenInput = document.getElementById("bidder");
+    if (hiddenInput) {
+      hiddenInput.value = currentNickname;
+    }
+  }
+
+  function loadState() {
+    const raw = localStorage.getItem("charityAuctionV1");
+    if (!raw) {
+      // 초기 샘플 LOT 1개 생성 (currentBid를 시작가와 동일하게 설정)
+      const sample = {
+        lots: [
+          {
+            id: crypto.randomUUID().slice(0, 8).toUpperCase(),
+            title: "BOUTIQUE MOSCHINO CARDIGAN (RED)",
+            refPrice: 560,
+            category: "CARDIGAN",
+            color: "RED",
+            size: "MEDIUM",
+            gender: "FEMALE",
+            condition: "중고",
+            notes: "",
+            startPrice: 20000,
+            tick: 1000,
+            currentBid: 20000,
+            imageData: "",
+            comments: [], // {price, name, ts}
+          },
+        ],
+        currentLotIdx: 0,
+        isAdmin: false,
+      };
+      localStorage.setItem("charityAuctionV1", JSON.stringify(sample));
+      return sample;
+    }
+    try {
+      return JSON.parse(raw);
+    } catch {
+      // 파싱 에러 시 초기화
+      const fallback = {
+        lots: [],
+        currentLotIdx: 0,
+        isAdmin: false,
+      };
+      localStorage.setItem("charityAuctionV1", JSON.stringify(fallback));
+      return fallback;
+    }
+  }
+  function saveState() {
+    localStorage.setItem("charityAuctionV1", JSON.stringify(state));
+  }
+
+  let state = loadState();
+
+  /***********************
+   * 관리자 모드 UI (현재는 버튼 없이 내부용)
+   ***********************/
+  function updateModeUI() {
+    const isAdmin = !!state.isAdmin;
+
+    const modeText = $("#modeText");
+    if (modeText) modeText.textContent = isAdmin ? "관리자" : "참가자";
+
+    const addLotBtn = $("#addLotBtn");
+    if (addLotBtn) addLotBtn.classList.toggle("hidden", !isAdmin);
+
+    const editLotBtn = $("#editLotBtn");
+    if (editLotBtn) editLotBtn.classList.toggle("hidden", !isAdmin);
+
+    const deleteLotBtn = $("#deleteLotBtn");
+    if (deleteLotBtn) deleteLotBtn.classList.toggle("hidden", !isAdmin);
+
+    const adminImageControls = $("#adminImageControls");
+    if (adminImageControls) adminImageControls.classList.toggle("hidden", !isAdmin);
+
+    const exportBtn = $("#exportBtn");
+    if (exportBtn) exportBtn.classList.toggle("hidden", !isAdmin);
+  }
+
+  /***********************
+   * LOT 렌더링/선택
+   ***********************/
+  function renderLotChips() {
+    const list = $("#lotList");
+    if (!list) return;
+    list.innerHTML = "";
+    state.lots.forEach((lot, idx) => {
+      const el = document.createElement("button");
+      el.className =
+        "chip" + (idx === state.currentLotIdx ? " active" : "");
+      el.textContent = `${idx + 1}. ${lot.title}`;
+      el.onclick = () => {
+        state.currentLotIdx = idx;
+        saveState();
+        renderAll();
+      };
+      list.appendChild(el);
+    });
+  }
+
+  function currentLot() {
+    return state.lots[state.currentLotIdx];
+  }
+
+  function renderLotView() {
+    const lot = currentLot();
+    if (!lot) return;
+
+    $("#currentLotTitle").textContent = lot.title;
+    $("#currentLotId").textContent = "LOT " + lot.id;
+    $("#v_lotId").textContent = "LOT " + lot.id;
+
+    $("#v_title").textContent = lot.title || "";
+    $("#v_refPrice").textContent = lot.refPrice
+      ? "$ " + fmt(lot.refPrice)
+      : "-";
+    $("#v_category").textContent = lot.category || "-";
+    $("#v_color").textContent = lot.color || "-";
+    $("#v_size").textContent = lot.size || "-";
+    $("#v_gender").textContent = lot.gender || "-";
+    $("#v_condition").textContent = lot.condition || "-";
+    $("#v_notes").textContent = lot.notes || "-";
+
+    $("#v_startPrice").textContent = fmt(lot.startPrice || 0);
+    $("#v_currentBid").textContent = fmt(lot.currentBid || 0);
+
+    const img = $("#lotImage");
+    if (lot.imageData) {
+      img.src = lot.imageData;
+      img.classList.remove("hidden");
+    } else {
+      img.removeAttribute("src");
+      img.classList.add("hidden");
+    }
+
+    renderComments();
+  }
+
+  function renderComments() {
+    const lot = currentLot();
+    const root = $("#comments");
+    root.innerHTML = "";
+    const list = [...(lot.comments || [])].sort((a, b) => b.ts - a.ts);
+    if (!list.length) {
+      const div = document.createElement("div");
+      div.className = "muted";
+      div.textContent = "아직 댓글이 없습니다.";
+      root.appendChild(div);
+      return;
+    }
+    list.forEach((c) => {
+      const div = document.createElement("div");
+      div.className = "comment";
+      div.innerHTML = `
+        <div class="row" style="justify-content:space-between;">
+          <strong>₩ ${fmt(c.price)}</strong>
+          <span class="meta">${new Date(c.ts).toLocaleString("ko-KR")}</span>
+        </div>
+        <div class="meta">작성자: ${escapeHtml(c.name)}</div>
+      `;
+      root.appendChild(div);
+    });
+  }
+
+  function escapeHtml(str) {
+    return (str || "").replace(/[&<>"']/g, (m) =>
+      ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;",
+      }[m])
+    );
+  }
+
+  /***********************
+   * LOT 추가/수정/삭제
+   ***********************/
+  function openEdit() {
+    const lot = currentLot();
+    $("#viewArea").classList.add("hidden");
+    $("#editForm").classList.remove("hidden");
+    $("#editLotBtn").classList.add("hidden");
+
+    $("#f_title").value = lot.title || "";
+    $("#f_refPrice").value = lot.refPrice || "";
+    $("#f_category").value = lot.category || "";
+    $("#f_color").value = lot.color || "";
+    $("#f_size").value = lot.size || "";
+    $("#f_gender").value = lot.gender || "";
+    $("#f_condition").value = lot.condition || "";
+    $("#f_notes").value = lot.notes || "";
+    $("#f_startPrice").value = lot.startPrice || 0;
+    $("#f_tick").value = lot.tick || 1000;
+  }
+
+  function closeEdit() {
+    $("#editForm").classList.add("hidden");
+    $("#viewArea").classList.remove("hidden");
+    $("#editLotBtn").classList.remove("hidden");
+  }
+
+  const editLotBtn = $("#editLotBtn");
+  if (editLotBtn) {
+    editLotBtn.addEventListener("click", () => {
+      if (!state.isAdmin) return;
+      openEdit();
+    });
+  }
+
+  const cancelEditBtn = $("#cancelEdit");
+  if (cancelEditBtn) {
+    cancelEditBtn.addEventListener("click", closeEdit);
+  }
+
+  const deleteLotBtn = $("#deleteLotBtn");
+  if (deleteLotBtn) {
+    deleteLotBtn.addEventListener("click", () => {
+      if (!state.isAdmin) return;
+      if (confirm("이 물품을 삭제하시겠습니까?")) {
+        state.lots.splice(state.currentLotIdx, 1);
+        if (state.currentLotIdx > 0) state.currentLotIdx--;
+        saveState();
+        renderAll();
+      }
+    });
+  }
+
+  const addLotBtn = $("#addLotBtn");
+  if (addLotBtn) {
+    addLotBtn.addEventListener("click", () => {
+      if (!state.isAdmin) return;
+      const newLot = {
+        id: crypto.randomUUID().slice(0, 8).toUpperCase(),
+        title: "새 물품",
+        refPrice: null,
+        category: "",
+        color: "",
+        size: "",
+        gender: "",
+        condition: "",
+        notes: "",
+        startPrice: 0,
+        tick: 1000,
+        currentBid: 0,
+        imageData: "",
+        comments: [],
+      };
+      state.lots.push(newLot);
+      state.currentLotIdx = state.lots.length - 1;
+      saveState();
+      renderAll();
+      openEdit();
+    });
+  }
+
+  const editForm = $("#editForm");
+  if (editForm) {
+    editForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (!state.isAdmin) return;
+      const lot = currentLot();
+      lot.title = $("#f_title").value.trim();
+      lot.refPrice =
+        parseInt($("#f_refPrice").value || "0", 10) || null;
+      lot.category = $("#f_category").value.trim();
+      lot.color = $("#f_color").value.trim();
+      lot.size = $("#f_size").value.trim();
+      lot.gender = $("#f_gender").value.trim();
+      lot.condition = $("#f_condition").value.trim();
+      lot.notes = $("#f_notes").value.trim();
+      lot.startPrice =
+        parseInt($("#f_startPrice").value || "0", 10) || 0;
+      lot.tick = parseInt($("#f_tick").value || "1000", 10) || 1000;
+
+      if ((lot.currentBid || 0) < lot.startPrice) {
+        lot.currentBid = lot.startPrice;
+      }
+      saveState();
+      renderAll();
+      closeEdit();
+    });
+  }
+
+  // 이미지 업로드
+  const imageInput = $("#imageInput");
+  if (imageInput) {
+    imageInput.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const lot = currentLot();
+        lot.imageData = ev.target.result;
+        saveState();
+        renderLotView();
+      };
+      reader.readAsDataURL(file);
+      e.target.value = "";
+    });
+  }
+
+  const removeImageBtn = $("#removeImageBtn");
+  if (removeImageBtn) {
+    removeImageBtn.addEventListener("click", () => {
+      const lot = currentLot();
+      lot.imageData = "";
+      saveState();
+      renderLotView();
+    });
+  }
+
+  /***********************
+   * 입찰(댓글)
+   ***********************/
+  const bidForm = $("#bidForm");
+  if (bidForm) {
+    bidForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const lot = currentLot();
+      const price = parseInt($("#bidPrice").value || "0", 10);
+      const name = ($("#bidder").value || "").trim();
+
+      if (!price) {
+        alert("입찰가를 입력해 주세요.");
+        return;
+      }
+      if (!currentUser || !currentUser.isLoggedIn || !currentNickname || !name) {
+        alert("로그인 정보가 없어 입찰할 수 없습니다. 다시 로그인해 주세요.");
+        window.location.href = PARTICIPANT_URL;
+        return;
+      }
+
+      if (price % (lot.tick || 1000) !== 0) {
+        alert(`입찰단위는 ${fmt(lot.tick || 1000)}원 입니다.`);
+        return;
+      }
+      if (price <= (lot.currentBid || lot.startPrice || 0)) {
+        alert("현재 최고가보다 큰 금액을 입력해 주세요.");
+        return;
+      }
+
+      lot.comments.push({ price, name, ts: Date.now() });
+      lot.currentBid = Math.max(lot.currentBid || 0, price);
+      saveState();
+      $("#bidPrice").value = "";
+      renderLotView();
+    });
+  }
+
+  /***********************
+   * 백업/복원
+   ***********************/
+  const exportBtn = $("#exportBtn");
+  if (exportBtn) {
+    exportBtn.addEventListener("click", () => {
+      if (!state.isAdmin) {
+        alert("관리자 전용 기능입니다.");
+        return;
+      }
+      const data = new Blob([JSON.stringify(state, null, 2)], {
+        type: "application/json",
+      });
+      const url = URL.createObjectURL(data);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `auction-backup-${new Date()
+        .toISOString()
+        .slice(0, 10)}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    });
+  }
+
+  const importFile = $("#importFile");
+  if (importFile) {
+    importFile.addEventListener("change", (e) => {
+      if (!state.isAdmin) {
+        alert("관리자 전용 기능입니다.");
+        e.target.value = "";
+        return;
+      }
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        try {
+          const obj = JSON.parse(ev.target.result);
+          if (!obj || !Array.isArray(obj.lots))
+            throw new Error("형식 오류");
+          state = obj;
+          saveState();
+          renderAll();
+          alert("데이터를 불러왔습니다.");
+        } catch (err) {
+          alert("JSON 형식이 올바르지 않습니다.");
+        }
+      };
+      reader.readAsText(file, "utf-8");
+      e.target.value = "";
+    });
+  }
+
+  /***********************
+   * 렌더 합본
+   ***********************/
+  function renderAll() {
+    updateModeUI();
+    renderLotChips();
+    renderLotView();
+  }
+
+  // URL 쿼리로 LOT 지정 (catalog → auction 이동 시)
+  (function syncFromQuery() {
+    const params = new URLSearchParams(location.search);
+    const lotId = params.get("lot");
+    if (!lotId) return;
+    const idx = state.lots.findIndex(
+      (l) => (l.id || "").toUpperCase() === lotId.toUpperCase()
+    );
+    if (idx >= 0) {
+      state.currentLotIdx = idx;
+      saveState();
+    }
+  })();
+
+  // 초기 렌더
+  renderAll();
+
+  // 로그인 상태 확인 및 닉네임 표시
+  currentUser = loadCurrentUser();
+  if (!currentUser || !currentUser.isLoggedIn || !currentUser.nickname) {
+    alert("경매에 참여하려면 먼저 로그인/닉네임 설정이 필요합니다.\n참여자 로그인 페이지로 이동합니다.");
+    window.location.href = PARTICIPANT_URL;
+  } else {
+    applyUserToBidArea();
+  }
+</script>
+</body>
+</html>
